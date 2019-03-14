@@ -1,4 +1,4 @@
-﻿namespace OG.Zoo.UI.Api
+﻿namespace OG.Zoo.UI
 {
     using LightInject.Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore;

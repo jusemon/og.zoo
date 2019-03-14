@@ -1,9 +1,9 @@
-﻿namespace OG.Zoo.UI.Api.Controllers.Params
+﻿namespace OG.Zoo.UI.Controllers.Params
 {
     using Application.Interfaces.Params;
     using Domain.Entities.Params;
     using Microsoft.AspNetCore.Mvc;
-    using UI.Api.Controllers.Generics;
+    using UI.Controllers.Generics;
 
     /// <summary>
     /// Infirmary Controller

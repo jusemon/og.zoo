@@ -1,4 +1,4 @@
-﻿namespace OG.Zoo.UI.Api.Controllers.Generics
+﻿namespace OG.Zoo.UI.Controllers.Generics
 {
     using Microsoft.AspNetCore.Mvc;
     using OG.Zoo.Application.Interfaces.DTOs;

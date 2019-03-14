@@ -1,13 +1,13 @@
-﻿namespace OG.Zoo.UI.Api
+﻿namespace OG.Zoo.UI
 {
     using Infraestructure.IoC;
     using LightInject;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SpaServices.AngularCli;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using System;
 
     public class Startup
     {
@@ -22,12 +22,13 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
         }
 
-        /// <summary>
-        /// Configures the container.
-        /// </summary>
-        /// <param name="container">The container.</param>
+        // This method overwrite the container to LighInject
         public void ConfigureContainer(IServiceContainer container)
         {
             new CompositionRoot().Register(container, this.Configuration);
@@ -46,7 +47,22 @@
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
             app.UseMvc();
+
+            app.UseSpa(spa =>
+            {
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
+            });
         }
     }
 }
