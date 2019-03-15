@@ -24,6 +24,7 @@ import {
     MatSelectModule,
     MatRadioModule,
     MatCardModule,
+    MatIconModule,
   ]
 })
 export class SharedModule { }

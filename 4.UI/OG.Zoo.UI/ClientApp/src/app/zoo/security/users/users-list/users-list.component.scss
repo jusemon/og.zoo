@@ -1,0 +1,18 @@
+.container {
+  padding: .5rem;
+}
+
+.full-width-table {
+  width: 100%;
+}
+
+.filter {
+  width: 100%;
+  > .field {
+    width: 50%;
+  }
+  > .pull-right {
+    right: calc(2.5rem - 50%);
+    position: relative;
+  }
+}
