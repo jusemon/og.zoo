@@ -1,8 +1,5 @@
 <div class="mat-elevation-z8 container">
   <div class="filter">
-    <mat-form-field class="field">
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-    </mat-form-field>
     <button class="pull-right" mat-mini-fab color="primary" type="button" [routerLink]="['/security/users/create']"><mat-icon aria-label="button with a add icon">add</mat-icon></button>
   </div>
   <table mat-table #table class="full-width-table" [dataSource]="dataSource" matSort aria-label="Elements">
