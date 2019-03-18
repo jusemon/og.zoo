@@ -36,7 +36,7 @@ export class BaseService<TEntity extends BaseEntity> {
 
   /**
    * Get the entity by id
-   * 
+   *
    * @param id The entity id
    * @param [urlController] The url controller
    * @returns A observable with the entity
@@ -53,7 +53,7 @@ export class BaseService<TEntity extends BaseEntity> {
 
   /**
    * Create a entity
-   * 
+   *
    * @param entity The entity to create
    * @param [urlController] The url controller
    * @returns A observable with the entity

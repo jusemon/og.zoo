@@ -1,93 +1,71 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
+import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import { InfirmaryService } from '../services/infirmary.service';
+import { Infirmary } from '../models/infirmary';
 
 @Component({
   selector: 'app-infirmary',
   templateUrl: './infirmary.component.html',
   styleUrls: ['./infirmary.component.css']
 })
-export class InfirmaryComponent {
-  addressForm = this.fb.group({
-    company: null,
-    firstName: [null, Validators.required],
-    lastName: [null, Validators.required],
-    address: [null, Validators.required],
-    address2: null,
-    city: [null, Validators.required],
-    state: [null, Validators.required],
-    postalCode: [null, Validators.compose([
-      Validators.required, Validators.minLength(5), Validators.maxLength(5)])
-    ],
-    shipping: ['free', Validators.required]
+export class InfirmaryComponent implements OnInit, OnDestroy {
+  id: string;
+  editMode: boolean;
+  infirmaryForm = this.fb.group({
+    id: [null],
+    admissionDate: [null],
+    idAnimal: [null, Validators.required],
+    diagnosis: [null, Validators.required]
   });
 
-  hasUnitNumber = false;
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private infirmaryService: InfirmaryService) { }
 
-  states = [
-    {name: 'Alabama', abbreviation: 'AL'},
-    {name: 'Alaska', abbreviation: 'AK'},
-    {name: 'American Samoa', abbreviation: 'AS'},
-    {name: 'Arizona', abbreviation: 'AZ'},
-    {name: 'Arkansas', abbreviation: 'AR'},
-    {name: 'California', abbreviation: 'CA'},
-    {name: 'Colorado', abbreviation: 'CO'},
-    {name: 'Connecticut', abbreviation: 'CT'},
-    {name: 'Delaware', abbreviation: 'DE'},
-    {name: 'District Of Columbia', abbreviation: 'DC'},
-    {name: 'Federated States Of Micronesia', abbreviation: 'FM'},
-    {name: 'Florida', abbreviation: 'FL'},
-    {name: 'Georgia', abbreviation: 'GA'},
-    {name: 'Guam', abbreviation: 'GU'},
-    {name: 'Hawaii', abbreviation: 'HI'},
-    {name: 'Idaho', abbreviation: 'ID'},
-    {name: 'Illinois', abbreviation: 'IL'},
-    {name: 'Indiana', abbreviation: 'IN'},
-    {name: 'Iowa', abbreviation: 'IA'},
-    {name: 'Kansas', abbreviation: 'KS'},
-    {name: 'Kentucky', abbreviation: 'KY'},
-    {name: 'Louisiana', abbreviation: 'LA'},
-    {name: 'Maine', abbreviation: 'ME'},
-    {name: 'Marshall Islands', abbreviation: 'MH'},
-    {name: 'Maryland', abbreviation: 'MD'},
-    {name: 'Massachusetts', abbreviation: 'MA'},
-    {name: 'Michigan', abbreviation: 'MI'},
-    {name: 'Minnesota', abbreviation: 'MN'},
-    {name: 'Mississippi', abbreviation: 'MS'},
-    {name: 'Missouri', abbreviation: 'MO'},
-    {name: 'Montana', abbreviation: 'MT'},
-    {name: 'Nebraska', abbreviation: 'NE'},
-    {name: 'Nevada', abbreviation: 'NV'},
-    {name: 'New Hampshire', abbreviation: 'NH'},
-    {name: 'New Jersey', abbreviation: 'NJ'},
-    {name: 'New Mexico', abbreviation: 'NM'},
-    {name: 'New York', abbreviation: 'NY'},
-    {name: 'North Carolina', abbreviation: 'NC'},
-    {name: 'North Dakota', abbreviation: 'ND'},
-    {name: 'Northern Mariana Islands', abbreviation: 'MP'},
-    {name: 'Ohio', abbreviation: 'OH'},
-    {name: 'Oklahoma', abbreviation: 'OK'},
-    {name: 'Oregon', abbreviation: 'OR'},
-    {name: 'Palau', abbreviation: 'PW'},
-    {name: 'Pennsylvania', abbreviation: 'PA'},
-    {name: 'Puerto Rico', abbreviation: 'PR'},
-    {name: 'Rhode Island', abbreviation: 'RI'},
-    {name: 'South Carolina', abbreviation: 'SC'},
-    {name: 'South Dakota', abbreviation: 'SD'},
-    {name: 'Tennessee', abbreviation: 'TN'},
-    {name: 'Texas', abbreviation: 'TX'},
-    {name: 'Utah', abbreviation: 'UT'},
-    {name: 'Vermont', abbreviation: 'VT'},
-    {name: 'Virgin Islands', abbreviation: 'VI'},
-    {name: 'Virginia', abbreviation: 'VA'},
-    {name: 'Washington', abbreviation: 'WA'},
-    {name: 'West Virginia', abbreviation: 'WV'},
-    {name: 'Wisconsin', abbreviation: 'WI'},
-    {name: 'Wyoming', abbreviation: 'WY'}
-  ];
+  ngOnInit() {
+    this.route.params.pipe(untilComponentDestroyed(this)).subscribe((data) => {
+      this.editMode = typeof (data.id) !== 'undefined';
+      if (this.editMode) {
+        this.get(data.id);
+      }
+    });
+  }
 
-  constructor(private fb: FormBuilder) {}
+  get(id: string) {
+    this.infirmaryService.get(id).pipe(untilComponentDestroyed(this)).subscribe((infirmary) => {
+      this.id = id;
+      this.infirmaryForm.setValue(infirmary);
+    });
+  }
 
   onSubmit() {
-    alert('Thanks!');
+    if (this.infirmaryForm.valid) {
+      const infirmary: Infirmary = this.infirmaryForm.value;
+      if (this.editMode) {
+        infirmary.id = this.id;
+        this.infirmaryService.update(infirmary).pipe(untilComponentDestroyed(this)).subscribe(() => {
+          this.snackBar.open(`Infirmary "${infirmary.admissionDate}" has been updated.`, 'Dismiss', { duration: 3000 });
+          this.goBack();
+        });
+      } else {
+        infirmary.admissionDate = new Date();
+        this.infirmaryService.create(infirmary).pipe(untilComponentDestroyed(this)).subscribe(() => {
+          this.snackBar.open(`Infirmary "${infirmary.admissionDate}" has been created.`, 'Dismiss', { duration: 3000});
+          this.goBack();
+        });
+      }
+    }
   }
+
+  goBack() {
+    this.router.navigate(['params/infirmaries']);
+  }
+
+  ngOnDestroy(): void { }
 }
