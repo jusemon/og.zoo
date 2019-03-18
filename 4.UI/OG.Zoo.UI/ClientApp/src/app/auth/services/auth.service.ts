@@ -1,6 +1,6 @@
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 import { Injectable } from '@angular/core';
@@ -12,6 +12,8 @@ import { Response } from '../../shared/generics/response';
     providedIn: 'root'
 })
 export class AuthService {
+    private isAuthenticatedSource = new BehaviorSubject(false);
+    isAuthenticated = this.isAuthenticatedSource.asObservable();
     api: string;
     key: string;
 
@@ -25,8 +27,12 @@ export class AuthService {
      *
      * @returns true if user is authenticated
      */
-    public isAuthenticated(): boolean {
-        return localStorage.getItem(this.key) !== null;
+    public setIsAuthenticated(status: boolean) {
+        this.isAuthenticatedSource.next(status);
+    }
+
+    public getIsAuthenticated(): boolean {
+        return this.isAuthenticatedSource.value;
     }
 
     /**
@@ -41,6 +47,9 @@ export class AuthService {
             if (!response.isSuccess) {
                 this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
                 throw new Error(response.exceptionMessage);
+            } else {
+                this.setIsAuthenticated(true);
+                return sessionStorage.setItem(this.key, JSON.stringify(response.result));
             }
         }), map(response => response.result));
     }

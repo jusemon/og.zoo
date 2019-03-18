@@ -27,8 +27,10 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.routesService.get().pipe(untilComponentDestroyed(this)).subscribe((routes) => {
       this.routes = routes;
     });
-    this.navigationVisible = this.authService.isAuthenticated();
-    console.log(this.navigationVisible)
+    this.authService.isAuthenticated.pipe(untilComponentDestroyed(this)).subscribe((value) => {
+      this.navigationVisible = value;
+      console.log(`Auth changed!: ${this.navigationVisible}`);
+    });
   }
 
   ngOnDestroy(): void { }
