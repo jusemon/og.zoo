@@ -4,12 +4,13 @@ import { LayoutModule } from '@angular/cdk/layout';
 import {
   MatButtonModule, MatSidenavModule, MatIconModule, MatListModule,
   MatTableModule, MatPaginatorModule, MatSortModule, MatInputModule,
-  MatSelectModule, MatRadioModule, MatCardModule
+  MatSelectModule, MatRadioModule, MatCardModule, MatSnackBarModule, MatDialogModule, MatDialogClose
 } from '@angular/material';
+import { ConfirmComponent } from './dialogs/confirm/confirm.component';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [ConfirmComponent],
   exports: [
     LayoutModule,
     MatToolbarModule,
@@ -25,6 +26,13 @@ import {
     MatRadioModule,
     MatCardModule,
     MatIconModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    ConfirmComponent
+  ],
+  imports: [
+    MatDialogModule,
+    MatButtonModule
   ]
 })
 export class SharedModule { }

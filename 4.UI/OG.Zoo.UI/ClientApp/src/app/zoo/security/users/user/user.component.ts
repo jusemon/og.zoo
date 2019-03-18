@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
-import { User } from '../models/user';
-import { RouterEvent, Router, Route, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
+import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 
 @Component({
   selector: 'app-user',
@@ -11,8 +11,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./user.component.css']
 })
 export class UserComponent implements OnInit, OnDestroy {
-  routeSub: Subscription;
-  user: User;
+  id: string;
   editMode: boolean;
   userForm = this.fb.group({
     name: [null, Validators.compose([
@@ -21,12 +20,16 @@ export class UserComponent implements OnInit, OnDestroy {
       Validators.required, Validators.minLength(8), Validators.maxLength(50)])]
   });
 
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService) { }
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private userService: UserService) { }
 
   ngOnInit() {
-    this.routeSub = this.route.params.subscribe((data) => {
+    this.route.params.pipe(untilComponentDestroyed(this)).subscribe((data) => {
       this.editMode = typeof (data.id) !== 'undefined';
-      console.log(data);
       if (this.editMode) {
         this.get(data.id);
       }
@@ -34,25 +37,28 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   get(id: string) {
-    this.userService.get(id).subscribe((user) => {
-      this.user = user;
+    this.userService.get(id).pipe(untilComponentDestroyed(this)).subscribe((user) => {
+      this.id = id;
       this.userForm.setValue({ name: user.name, password: user.password });
     });
   }
 
-  ngOnDestroy(): void {
-    this.routeSub.unsubscribe();
-  }
+  ngOnDestroy(): void { }
 
   onSubmit() {
     if (this.userForm.valid) {
-      const id = this.user.id;
-      this.user = this.userForm.value;
+      const user = this.userForm.value;
       if (this.editMode) {
-        this.user.id = id;
-        this.userService.update(this.user).subscribe(() => this.goBack());
+        user.id = this.id;
+        this.userService.update(user).pipe(untilComponentDestroyed(this)).subscribe(() => {
+          this.snackBar.open(`User "${user.name}" has been updated.`, 'Dismiss', { duration: 3000 });
+          this.goBack();
+        });
       } else {
-        this.userService.create(this.user).subscribe(() => this.goBack());
+        this.userService.create(user).pipe(untilComponentDestroyed(this)).subscribe(() => {
+          this.snackBar.open(`User "${user.name}" has been created.`, 'Dismiss', { duration: 3000});
+          this.goBack();
+        });
       }
     }
   }

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { Response } from './response';
 import { tap, map } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * A base for the services
@@ -13,7 +14,7 @@ import { tap, map } from 'rxjs/operators';
 export class BaseService<TEntity extends BaseEntity> {
   api: string;
 
-  constructor(private http: HttpClient, private urlController: string) {
+  constructor(private http: HttpClient, private urlController: string, private snackBar: MatSnackBar) {
     this.api = environment.apiZoo;
   }
 
@@ -27,7 +28,8 @@ export class BaseService<TEntity extends BaseEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
     return this.http.get<Response<TEntity[]>>(`${this.api}/${controller}/`).pipe(tap((response) => {
       if (!response.isSuccess) {
-        console.error(response.exceptionType, response.exceptionMessage);
+        this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
+        throw new Error(response.exceptionMessage);
       }
     }), map(response => response.result));
   }
@@ -43,7 +45,8 @@ export class BaseService<TEntity extends BaseEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
     return this.http.get<Response<TEntity>>(`${this.api}/${controller}/${id}`).pipe(tap((response) => {
       if (!response.isSuccess) {
-        console.error(response.exceptionType, response.exceptionMessage);
+        this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
+        throw new Error(response.exceptionMessage);
       }
     }), map(response => response.result));
   }
@@ -59,7 +62,8 @@ export class BaseService<TEntity extends BaseEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
     return this.http.post<Response<TEntity>>(`${this.api}/${controller}/`, entity).pipe(tap((response) => {
       if (!response.isSuccess) {
-        console.error(response.exceptionType, response.exceptionMessage);
+        this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
+        throw new Error(response.exceptionMessage);
       }
     }), map(response => response.result));
   }
@@ -75,6 +79,7 @@ export class BaseService<TEntity extends BaseEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
     return this.http.put<Response<TEntity>>(`${this.api}/${controller}/`, entity).pipe(map(response => {
       if (!response.isSuccess) {
+        this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
         throw new Error(response.exceptionMessage);
       }
       return response.result;
@@ -92,7 +97,8 @@ export class BaseService<TEntity extends BaseEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
     return this.http.delete<Response<TEntity>>(`${this.api}/${controller}/${id}`).pipe(tap((response) => {
       if (!response.isSuccess) {
-        console.error(response.exceptionType, response.exceptionMessage);
+        this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
+        throw new Error(response.exceptionMessage);
       }
     }), map(response => response.result));
   }
