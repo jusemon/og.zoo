@@ -1,5 +1,7 @@
 ﻿namespace OG.Zoo.Infraestructure.Utils.Objects
 {
+    using Google.Cloud.Firestore;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
@@ -42,9 +44,28 @@
             return source.GetType().GetProperties(bindingAttr).ToDictionary
             (
                 propInfo => propInfo.Name,
-                propInfo => propInfo.GetValue(source, null)
+                propInfo => GetValue(source, propInfo)
             );
 
+        }
+
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="propInfo">The property information.</param>
+        /// <returns></returns>
+        private static object GetValue(object source, PropertyInfo propInfo)
+        {
+            var converter = propInfo.GetCustomAttribute<FirestorePropertyAttribute>()?.ConverterType;
+            if (converter == null)
+            {
+                return propInfo.GetValue(source, null);
+            }
+            var ctor = converter.GetConstructor(new Type[0]);
+            var documentRefereceConverter = (IFirestoreConverter<string>) ctor.Invoke(new object[] { });
+            var value = propInfo.GetValue(source, null).ToString();
+            return documentRefereceConverter.ToFirestore(value);
         }
     }
 }
