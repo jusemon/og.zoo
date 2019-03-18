@@ -2,6 +2,7 @@
 {
     using Domain.Entities.Generics;
     using Domain.Interfaces.Generics;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -94,6 +95,46 @@
             var name = typeof(TEntity).Name;
             var document = this.DbFactory.GetDb().Collection(name).Document(entity.Id.ToString());
             await document.UpdateAsync(entity.AsDictionary());
+        }
+
+        /// <summary>
+        /// Gets the by.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <param name="filter">The filter.</param>
+        /// <returns></returns>
+        public async Task<TEntity> GetBy<T>(TEntity entity, Func<TEntity, T> filter) where T : class
+        {
+            T field = filter(entity);
+            var snapshot = await this.DbFactory.GetDb().Collection(typeof(TEntity).Name)
+                .GetSnapshotAsync();
+            return snapshot.Documents.Select(d =>
+            {
+                var e = d.ConvertTo<TEntity>();
+                e.Id = d.Id;
+                return e;
+            }).FirstOrDefault(e => field.Equals(filter(e)) );
+        }
+
+        /// <summary>
+        /// Gets all by.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <param name="filter">The filter.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TEntity>> GetAllBy<T>(TEntity entity, Func<TEntity, T> filter) where T : class
+        {
+            T field = filter(entity);
+            var snapshot = await this.DbFactory.GetDb().Collection(typeof(TEntity).Name)
+                .GetSnapshotAsync();
+            return snapshot.Documents.Select(d =>
+            {
+                var e = d.ConvertTo<TEntity>();
+                e.Id = d.Id;
+                return e;
+            }).Where(e => field.Equals(filter(e)));
         }
     }
 }

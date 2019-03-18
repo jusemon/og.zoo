@@ -1,5 +1,8 @@
 ﻿namespace OG.Zoo.Infraestructure.Data.Repository.Security
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Domain.Entities.Security;
     using Domain.Interfaces.Security.User;
     using Generics;

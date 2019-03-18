@@ -1,6 +1,7 @@
 ﻿namespace OG.Zoo.Domain.Interfaces.Generics
 {
     using Entities.Generics;
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -41,5 +42,24 @@
         /// </summary>
         /// <returns></returns>
         Task<IEnumerable<TEntity>> GetAll();
+
+        /// <summary>
+        /// Gets the by.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <param name="field">The field.</param>
+        /// <returns></returns>
+        Task<TEntity> GetBy<T>(TEntity entity, Func<TEntity, T> field) where T : class;
+
+        /// <summary>
+        /// Gets all by.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity">The entity.</param>
+        /// <param name="field">The field.</param>
+        /// <returns></returns>
+        Task<IEnumerable<TEntity>> GetAllBy<T>(TEntity entity, Func<TEntity, T> field) where T : class;
+
     }
 }

@@ -4,7 +4,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import {
   MatButtonModule, MatSidenavModule, MatIconModule, MatListModule,
   MatTableModule, MatPaginatorModule, MatSortModule, MatInputModule,
-  MatSelectModule, MatRadioModule, MatCardModule, MatSnackBarModule, MatDialogModule, MatDialogClose
+  MatSelectModule, MatRadioModule, MatCardModule, MatSnackBarModule, MatDialogModule, MatDialogClose, MatFormFieldModule
 } from '@angular/material';
 import { ConfirmComponent } from './dialogs/confirm/confirm.component';
 
@@ -15,6 +15,7 @@ import { ConfirmComponent } from './dialogs/confirm/confirm.component';
     LayoutModule,
     MatToolbarModule,
     MatButtonModule,
+    MatFormFieldModule,
     MatSidenavModule,
     MatIconModule,
     MatListModule,

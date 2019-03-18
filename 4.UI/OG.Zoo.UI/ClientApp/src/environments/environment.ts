@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiZoo: 'https://localhost:44354/api'
+  apiZoo: 'https://localhost:44354/api',
+  key: 'zoo'
 };
 
 /*
