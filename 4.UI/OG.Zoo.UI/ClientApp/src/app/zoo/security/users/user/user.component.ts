@@ -43,8 +43,6 @@ export class UserComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void { }
-
   onSubmit() {
     if (this.userForm.valid) {
       const user = this.userForm.value;
@@ -66,4 +64,6 @@ export class UserComponent implements OnInit, OnDestroy {
   goBack() {
     this.router.navigate(['security/users']);
   }
+
+  ngOnDestroy(): void { }
 }
