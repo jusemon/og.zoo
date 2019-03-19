@@ -32,5 +32,8 @@
             }
         }
     }
+    .mat-form-field-appearance-outline .mat-form-field-outline-thick{
+        color: mat-color($primary);
+    }
 }
 
