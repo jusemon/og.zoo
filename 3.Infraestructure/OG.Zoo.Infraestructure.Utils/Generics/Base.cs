@@ -1,4 +1,4 @@
-﻿namespace OG.Zoo.Domain.Entities.Generics
+﻿namespace OG.Zoo.Infraestructure.Utils
 {
     /// <summary>
     /// Entity base

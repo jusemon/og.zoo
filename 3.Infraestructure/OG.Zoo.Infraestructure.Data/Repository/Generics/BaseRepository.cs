@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Infraestructure.Data.Repository.Generics
 {
-    using Domain.Entities.Generics;
     using Domain.Interfaces.Generics;
+    using Infraestructure.Utils;
     using System;
     using System.Collections.Generic;
     using System.Linq;

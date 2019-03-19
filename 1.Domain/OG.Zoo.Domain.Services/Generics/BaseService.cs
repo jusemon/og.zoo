@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Domain.Services.Generics
 {
-    using Entities.Generics;
     using FluentValidation;
+    using Infraestructure.Utils;
     using Infraestructure.Utils.Exceptions;
     using Interfaces.Generics;
     using System.Collections.Generic;

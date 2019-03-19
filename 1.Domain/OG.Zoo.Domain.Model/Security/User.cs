@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Domain.Entities.Security
 {
-    using Generics;
     using Google.Cloud.Firestore;
+    using Infraestructure.Utils;
 
     /// <summary>
     /// User class

@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Domain.Entities.Params
 {
-    using Generics;
     using Google.Cloud.Firestore;
+    using Infraestructure.Utils;
     using Infraestructure.Utils.Firebase;
     using System;
 
@@ -17,8 +17,8 @@
         /// <value>
         /// The identifier animal.
         /// </value>
-        [FirestoreProperty(ConverterType = typeof(DocumentReferenceConverter))]
-        public string IdAnimal { get; set; }
+        [FirestoreProperty(ConverterType = typeof(DocumentReferenceEntityConverter<Animal>))]
+        public Animal IdAnimal { get; set; }
 
         /// <summary>
         /// Gets or sets the admission date.
