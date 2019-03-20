@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material';
 export class BaseService<TEntity extends BaseEntity> {
   api: string;
 
-  constructor(private http: HttpClient, private urlController: string, private snackBar: MatSnackBar) {
+  constructor(protected http: HttpClient, protected urlController: string, protected snackBar: MatSnackBar) {
     this.api = environment.apiZoo;
   }
 

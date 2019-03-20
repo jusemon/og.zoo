@@ -1,5 +1,6 @@
 ﻿namespace OG.Zoo.Infraestructure.Utils.Firebase
 {
+    using Generics;
     using Google.Cloud.Firestore;
     using System;
 

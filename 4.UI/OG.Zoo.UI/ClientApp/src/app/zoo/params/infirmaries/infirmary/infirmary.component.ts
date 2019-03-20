@@ -16,6 +16,7 @@ export class InfirmaryComponent implements OnInit, OnDestroy {
   editMode: boolean;
   infirmaryForm = this.fb.group({
     id: [null],
+    animal: [null],
     admissionDate: [null],
     idAnimal: [null, Validators.required],
     diagnosis: [null, Validators.required]

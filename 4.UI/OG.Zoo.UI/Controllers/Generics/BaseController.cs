@@ -1,8 +1,8 @@
 ﻿namespace OG.Zoo.UI.Controllers.Generics
 {
+    using Application.Interfaces.DTOs;
+    using Application.Interfaces.Generics;
     using Microsoft.AspNetCore.Mvc;
-    using OG.Zoo.Application.Interfaces.DTOs;
-    using OG.Zoo.Application.Interfaces.Generics;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -34,7 +34,7 @@
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
         [HttpPost]
-        public Task<Response<TEntity>> Create([FromBody] TEntity entity) {
+        public virtual Task<Response<TEntity>> Create([FromBody] TEntity entity) {
             return this.application.Create(entity);
         }
 
@@ -44,7 +44,7 @@
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
         [HttpPut]
-        public Task<Response<TEntity>> Update([FromBody] TEntity entity) {
+        public virtual Task<Response<TEntity>> Update([FromBody] TEntity entity) {
             return this.application.Update(entity);
 
         }
@@ -55,7 +55,7 @@
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public Task<Response<TEntity>> Delete(TId id) {
+        public virtual Task<Response<TEntity>> Delete(TId id) {
             return this.application.Delete(id);
 
         }
@@ -66,7 +66,7 @@
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public Task<Response<TEntity>> Get(TId id) {
+        public virtual Task<Response<TEntity>> Get(TId id) {
             return this.application.Get(id);
 
         }
@@ -76,7 +76,7 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public Task<Response<IEnumerable<TEntity>>> GetAll() {
+        public virtual Task<Response<IEnumerable<TEntity>>> GetAll() {
             return this.application.GetAll();
         }
     }
