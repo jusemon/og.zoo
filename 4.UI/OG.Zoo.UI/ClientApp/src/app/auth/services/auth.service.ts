@@ -12,7 +12,7 @@ import { Response } from '../../shared/generics/response';
     providedIn: 'root'
 })
 export class AuthService {
-    private isAuthenticatedSource = new BehaviorSubject(false);
+    private isAuthenticatedSource = new BehaviorSubject(localStorage.getItem(environment.key) != null);
     isAuthenticated = this.isAuthenticatedSource.asObservable();
     api: string;
     key: string;
@@ -23,16 +23,20 @@ export class AuthService {
     }
 
     /**
+     * Set if user authenticated
+     *
+     */
+    private setIsAuthenticated(status: boolean) {
+        this.isAuthenticatedSource.next(status);
+    }
+
+    /**
      * Get if user authenticated
      *
      * @returns true if user is authenticated
      */
-    public setIsAuthenticated(status: boolean) {
-        this.isAuthenticatedSource.next(status);
-    }
-
     public getIsAuthenticated(): boolean {
-        return this.isAuthenticatedSource.value;
+        return localStorage.getItem(environment.key) != null;
     }
 
     /**
@@ -49,8 +53,17 @@ export class AuthService {
                 throw new Error(response.exceptionMessage);
             } else {
                 this.setIsAuthenticated(true);
-                return sessionStorage.setItem(this.key, JSON.stringify(response.result));
+                return localStorage.setItem(this.key, JSON.stringify(response.result));
             }
         }), map(response => response.result));
+    }
+
+    /**
+     * Deauthenticate the user
+     *
+     */
+    public deauthenticate(): void {
+        this.setIsAuthenticated(false);
+        localStorage.clear();
     }
 }

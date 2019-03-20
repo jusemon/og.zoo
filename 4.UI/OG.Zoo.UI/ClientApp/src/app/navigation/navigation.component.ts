@@ -6,6 +6,7 @@ import { RoutesService } from '../shared/services/routes.service';
 import { Route } from '../shared/services/routes';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { AuthService } from '../auth/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navigation',
@@ -21,16 +22,28 @@ export class NavigationComponent implements OnInit, OnDestroy {
       untilComponentDestroyed(this)
     );
 
-  constructor(private breakpointObserver: BreakpointObserver, private routesService: RoutesService, public authService: AuthService) { }
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private router: Router,
+    private routesService: RoutesService,
+    public authService: AuthService) { }
 
   ngOnInit() {
     this.routesService.get().pipe(untilComponentDestroyed(this)).subscribe((routes) => {
       this.routes = routes;
     });
     this.authService.isAuthenticated.pipe(untilComponentDestroyed(this)).subscribe((value) => {
-      this.navigationVisible = value;
-      console.log(`Auth changed!: ${this.navigationVisible}`);
+      if (value) {
+        setTimeout(() => this.navigationVisible = value, 100);
+      } else {
+        this.navigationVisible = value;
+      }
     });
+  }
+
+  close() {
+    this.authService.deauthenticate();
+    this.router.navigate(['/auth']);
   }
 
   ngOnDestroy(): void { }
