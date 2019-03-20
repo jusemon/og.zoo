@@ -35,6 +35,7 @@
             var entity = snapshot.ConvertTo<Infirmary>();
             var snapshotAnimal = await db.Document(entity.IdAnimal).GetSnapshotAsync();
             entity.Animal = snapshotAnimal.ConvertTo<Animal>();
+            entity.Animal.Id = snapshotAnimal.Id;
             entity.Id = id;
             return entity;
         }
