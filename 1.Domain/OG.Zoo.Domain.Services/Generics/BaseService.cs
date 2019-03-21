@@ -43,7 +43,7 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public async Task Create(TEntity entity)
+        public virtual async Task Create(TEntity entity)
         {
             this.Validate(entity);
             await this.repository.Create(entity);
@@ -54,7 +54,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public async Task Delete(TId id)
+        public virtual async Task Delete(TId id)
         {
             await this.repository.Delete(id);
         }
@@ -64,7 +64,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public async Task<TEntity> Get(TId id)
+        public virtual  async Task<TEntity> Get(TId id)
         {
             return await this.repository.Get(id);
         }
@@ -73,7 +73,7 @@
         /// Gets all.
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public virtual async Task<IEnumerable<TEntity>> GetAll()
         {
             return await this.repository.GetAll();
         }
@@ -83,7 +83,7 @@
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
-        public async Task Update(TEntity entity)
+        public virtual async Task Update(TEntity entity)
         {
             this.Validate(entity);
             await this.repository.Update(entity);

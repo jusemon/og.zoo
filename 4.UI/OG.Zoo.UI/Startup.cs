@@ -61,10 +61,10 @@
                 if (env.IsDevelopment())
                 {
                     // this can be useful if you don't want to start the angular server manually
-                    //spa.UseAngularCliServer(npmScript: "start");
+                    spa.UseAngularCliServer(npmScript: "start");
 
                     // use this if you want to start manually the angular server
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    //spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
 
                 }
             });
