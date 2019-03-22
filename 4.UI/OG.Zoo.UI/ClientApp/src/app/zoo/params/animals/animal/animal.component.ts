@@ -12,7 +12,6 @@ import { Animal } from '../models/animal';
   styleUrls: ['./animal.component.css']
 })
 export class AnimalComponent implements OnInit, OnDestroy {
-  id: string;
   editMode: boolean;
   animalForm = this.fb.group({
     id: [null],
@@ -43,7 +42,6 @@ export class AnimalComponent implements OnInit, OnDestroy {
 
   get(id: string) {
     this.animalService.get(id).pipe(untilComponentDestroyed(this)).subscribe((animal) => {
-      this.id = id;
       this.animalForm.setValue(animal);
     });
   }
@@ -52,7 +50,6 @@ export class AnimalComponent implements OnInit, OnDestroy {
     if (this.animalForm.valid) {
       const animal: Animal = this.animalForm.value;
       if (this.editMode) {
-        animal.id = this.id;
         this.animalService.update(animal).pipe(untilComponentDestroyed(this)).subscribe(() => {
           this.snackBar.open(`Animal "${animal.name}" has been updated.`, 'Dismiss', { duration: 3000 });
           this.goBack();

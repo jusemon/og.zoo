@@ -4,6 +4,7 @@ import { UserService } from '../services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import { Base64 } from 'src/app/shared/utils/base64';
 
 @Component({
   selector: 'app-user',
@@ -11,9 +12,10 @@ import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
   styleUrls: ['./user.component.css']
 })
 export class UserComponent implements OnInit, OnDestroy {
-  id: string;
   editMode: boolean;
+  pass = '**********';
   userForm = this.fb.group({
+    id: [null],
     name: [null, Validators.compose([
       Validators.required, Validators.minLength(3), Validators.maxLength(15)])],
     password: [null, Validators.compose([
@@ -38,16 +40,19 @@ export class UserComponent implements OnInit, OnDestroy {
 
   get(id: string) {
     this.userService.get(id).pipe(untilComponentDestroyed(this)).subscribe((user) => {
-      this.id = id;
-      this.userForm.setValue({ name: user.name, password: user.password });
+      user.password = this.pass;
+      this.userForm.setValue(user);
     });
   }
 
   onSubmit() {
     if (this.userForm.valid) {
       const user = this.userForm.value;
+      user.password = Base64.encode(user.password);
       if (this.editMode) {
-        user.id = this.id;
+        if (user.password === Base64.encode(this.pass)) {
+          user.password = '';
+        }
         this.userService.update(user).pipe(untilComponentDestroyed(this)).subscribe(() => {
           this.snackBar.open(`User "${user.name}" has been updated.`, 'Dismiss', { duration: 3000 });
           this.goBack();

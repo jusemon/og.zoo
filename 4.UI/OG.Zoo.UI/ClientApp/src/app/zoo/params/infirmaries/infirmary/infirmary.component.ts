@@ -18,7 +18,6 @@ import { BaseEntity } from 'src/app/shared/generics/base-entity';
   styleUrls: ['./infirmary.component.css']
 })
 export class InfirmaryComponent implements OnInit, OnDestroy {
-  id: string;
   editMode: boolean;
   infirmaryForm = this.fb.group({
     id: [null],
@@ -51,7 +50,6 @@ export class InfirmaryComponent implements OnInit, OnDestroy {
 
   get(id: string) {
     this.infirmaryService.getWithRelations(id).pipe(untilComponentDestroyed(this)).subscribe((infirmary) => {
-      this.id = id;
       this.infirmaryForm.setValue(infirmary);
     });
   }
@@ -82,7 +80,6 @@ export class InfirmaryComponent implements OnInit, OnDestroy {
       const infirmary: Infirmary = this.infirmaryForm.value;
       infirmary.idAnimal = `Animal/${infirmary.animal.id}`;
       if (this.editMode) {
-        infirmary.id = this.id;
         this.infirmaryService.update(infirmary).pipe(untilComponentDestroyed(this)).subscribe(() => {
           this.snackBar.open(`Infirmary "${infirmary.admissionDate}" has been updated.`, 'Dismiss', { duration: 3000 });
           this.goBack();
