@@ -17,7 +17,7 @@ export class InfirmariesListComponent implements OnInit, OnDestroy {
   dataSource: CustomListDataSource<Infirmary>;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['idAnimal', 'admissionDate', 'diagnosis', 'actions'];
+  displayedColumns = ['animal', 'admissionDate', 'diagnosis', 'actions'];
 
   /**
    *
@@ -34,7 +34,7 @@ export class InfirmariesListComponent implements OnInit, OnDestroy {
   }
 
   refresh() {
-    this.infirmaryService.getAll().pipe(untilComponentDestroyed(this)).subscribe((data) => {
+    this.infirmaryService.getAllWithRelations().pipe(untilComponentDestroyed(this)).subscribe((data) => {
       this.dataSource.setData(data);
     });
   }

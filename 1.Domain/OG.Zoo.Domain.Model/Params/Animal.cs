@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Domain.Entities.Params
 {
-    using Generics;
     using Google.Cloud.Firestore;
+    using Infraestructure.Utils.Generics;
 
     /// <summary>
     /// Animal class

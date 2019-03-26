@@ -4,6 +4,7 @@ import { AuthService } from './services/auth.service';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { MatSnackBar } from '@angular/material';
 import { Route, Router } from '@angular/router';
+import { Base64 } from '../shared/utils/base64';
 
 @Component({
   selector: 'app-auth',
@@ -27,6 +28,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.authForm.valid) {
         const user = this.authForm.value;
+        user.password = Base64.encode(user.password);
         this.authService.authenticate(user).pipe(untilComponentDestroyed(this)).subscribe(() => {
           this.snackBar.open(`User "${user.name}" has logged on.`, 'Dismiss', { duration: 3000});
           this.router.navigate(['home']);

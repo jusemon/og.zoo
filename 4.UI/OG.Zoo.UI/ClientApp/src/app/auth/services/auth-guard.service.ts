@@ -11,7 +11,7 @@ export class AuthGuardService implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const inAuth = route.routeConfig.path === 'auth';
-    if (this.authService.getIsAuthenticated()) {
+    if (this.authService.isAuthenticated()) {
       if (inAuth) {
         this.router.navigate(['/home']);
       }

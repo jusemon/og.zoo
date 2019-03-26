@@ -1,6 +1,6 @@
 ﻿namespace OG.Zoo.Domain.Interfaces.Generics
 {
-    using Entities.Generics;
+    using Infraestructure.Utils.Generics;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;

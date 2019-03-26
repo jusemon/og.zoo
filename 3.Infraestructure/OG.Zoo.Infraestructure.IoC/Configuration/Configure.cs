@@ -1,6 +1,7 @@
 ﻿namespace OG.Zoo.Infraestructure.IoC.Configuration
 {
     using Microsoft.Extensions.Configuration;
+    using OG.Zoo.Infraestructure.IoC.Configuration.Configs;
     using OG.Zoo.Infraestructure.Utils.Firebase;
     using System;
 
@@ -36,6 +37,11 @@
             var section = this.configuration.GetSection(FirebaseConstants.FirebaseConfig);
             Environment.SetEnvironmentVariable(FirebaseConstants.GoogleApplicationCredentials, section["Credentials"]);
             Environment.SetEnvironmentVariable(FirebaseConstants.GoogleProjectId, section["ProjectId"]);
+        }
+
+        public ServicesConfig GetServicesConfig()
+        {
+            return this.configuration.GetSection(nameof(ServicesConfig)).Get<ServicesConfig>();
         }
     }
 }

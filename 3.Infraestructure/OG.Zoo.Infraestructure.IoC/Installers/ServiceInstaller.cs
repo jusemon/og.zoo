@@ -4,6 +4,8 @@
     using Domain.Interfaces.Generics;
     using Domain.Services.Generics;
     using LightInject;
+    using OG.Zoo.Domain.Interfaces.Security.User;
+    using OG.Zoo.Domain.Services.Security.User;
     using System.Linq;
 
     /// <summary>
@@ -31,6 +33,9 @@
         /// <param name="serviceRegistry">The service registry.</param>
         public void Install(IServiceRegistry serviceRegistry)
         {
+            var servicesConfig = this.configure.GetServicesConfig();
+            serviceRegistry.Register<IUserService>(
+                (factory) => new UserService(factory.GetInstance<IUserRepository>(), servicesConfig.Key));
             serviceRegistry.RegisterAssembly(
                 typeof(BaseService<,>).Assembly, (s, _) =>
                 s.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IBaseService<,>)));

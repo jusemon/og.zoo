@@ -12,8 +12,8 @@ import { Response } from '../../shared/generics/response';
     providedIn: 'root'
 })
 export class AuthService {
-    private isAuthenticatedSource = new BehaviorSubject(false);
-    isAuthenticated = this.isAuthenticatedSource.asObservable();
+    private isAuthenticatedSource = new BehaviorSubject(localStorage.getItem(environment.key) != null);
+    authenticated = this.isAuthenticatedSource.asObservable();
     api: string;
     key: string;
 
@@ -23,16 +23,20 @@ export class AuthService {
     }
 
     /**
+     * Set if user authenticated
+     *
+     */
+    private setAuthenticated(status: boolean) {
+        this.isAuthenticatedSource.next(status);
+    }
+
+    /**
      * Get if user authenticated
      *
      * @returns true if user is authenticated
      */
-    public setIsAuthenticated(status: boolean) {
-        this.isAuthenticatedSource.next(status);
-    }
-
-    public getIsAuthenticated(): boolean {
-        return this.isAuthenticatedSource.value;
+    public isAuthenticated(): boolean {
+        return localStorage.getItem(environment.key) != null;
     }
 
     /**
@@ -42,15 +46,36 @@ export class AuthService {
      * @param [urlController] The url controller
      * @returns A observable with the entity
      */
-    public authenticate(entity: UserLogin): Observable<User> {
-        return this.http.post<Response<User>>(`${this.api}/user/login`, entity).pipe(tap((response) => {
+    public authenticate(entity: UserLogin): Observable<UserLogin> {
+        return this.http.post<Response<UserLogin>>(`${this.api}/user/login`, entity).pipe(tap((response) => {
             if (!response.isSuccess) {
                 this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
                 throw new Error(response.exceptionMessage);
             } else {
-                this.setIsAuthenticated(true);
-                return sessionStorage.setItem(this.key, JSON.stringify(response.result));
+                this.setAuthenticated(true);
+                return localStorage.setItem(this.key, JSON.stringify(response.result));
             }
         }), map(response => response.result));
+    }
+
+    /**
+     * Get Token
+     */
+    public getToken() {
+        if (this.isAuthenticated()) {
+            const user: UserLogin =  JSON.parse(localStorage.getItem(this.key));
+            return user.token;
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * Deauthenticate the user
+     *
+     */
+    public deauthenticate(): void {
+        this.setAuthenticated(false);
+        localStorage.clear();
     }
 }

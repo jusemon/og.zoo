@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Domain.Entities.Params
 {
-    using Generics;
     using Google.Cloud.Firestore;
+    using Infraestructure.Utils.Generics;
     using Infraestructure.Utils.Firebase;
     using System;
 
@@ -37,5 +37,13 @@
         /// </value>
         [FirestoreProperty]
         public string Diagnosis { get; set; }
+
+        /// <summary>
+        /// Gets or sets the animal.
+        /// </summary>
+        /// <value>
+        /// The animal.
+        /// </value>
+        public Animal Animal { get; set; }
     }
 }

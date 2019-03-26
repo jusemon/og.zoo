@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Infraestructure.Data.Repository.Generics
 {
-    using Domain.Entities.Generics;
     using Domain.Interfaces.Generics;
+    using Infraestructure.Utils.Generics;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -93,7 +93,7 @@
         public async Task Update(TEntity entity)
         {
             var name = typeof(TEntity).Name;
-            var document = this.DbFactory.GetDb().Collection(name).Document(entity.Id.ToString());
+            var document = this.DbFactory.GetDb().Collection(name).Document(entity.Id);
             await document.UpdateAsync(entity.AsDictionary());
         }
 

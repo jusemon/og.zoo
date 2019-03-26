@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Application.Services.Generics
 {
-    using Domain.Entities.Generics;
     using Domain.Interfaces.Generics;
+    using Infraestructure.Utils.Generics;
     using Interfaces.DTOs;
     using Interfaces.Generics;
     using System.Collections.Generic;

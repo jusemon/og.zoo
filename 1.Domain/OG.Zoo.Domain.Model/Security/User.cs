@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Domain.Entities.Security
 {
-    using Generics;
     using Google.Cloud.Firestore;
+    using Infraestructure.Utils.Generics;
 
     /// <summary>
     /// User class
@@ -26,5 +26,13 @@
         /// </value>
         [FirestoreProperty]
         public string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the token.
+        /// </summary>
+        /// <value>
+        /// The token.
+        /// </value>
+        public string Token { get; set; }
     }
 }
