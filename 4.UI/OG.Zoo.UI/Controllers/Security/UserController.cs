@@ -1,10 +1,10 @@
 ﻿namespace OG.Zoo.UI.Controllers.Security
 {
+    using Application.Interfaces.DTOs;
     using Application.Interfaces.Security;
     using Domain.Entities.Security;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using OG.Zoo.Application.Interfaces.DTOs;
-    using System;
     using System.Threading.Tasks;
     using UI.Controllers.Generics;
 
@@ -12,6 +12,7 @@
     /// User Application
     /// </summary>
     /// <seealso cref="OG.Zoo.UI.Controllers.Generics.BaseController{OG.Zoo.Domain.Entities.Security.User, System.String}" />
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : BaseController<User, string>
@@ -30,6 +31,12 @@
             this.userApplication = application;
         }
 
+        /// <summary>
+        /// Logins the specified user.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("Login")]
         public Task<Response<User>> Login([FromBody] User user)
         {

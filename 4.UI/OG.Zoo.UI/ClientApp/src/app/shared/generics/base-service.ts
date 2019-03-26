@@ -5,6 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { Response } from './response';
 import { tap, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 /**
  * A base for the services
@@ -14,8 +15,21 @@ import { MatSnackBar } from '@angular/material';
 export class BaseService<TEntity extends BaseEntity> {
   api: string;
 
-  constructor(protected http: HttpClient, protected urlController: string, protected snackBar: MatSnackBar) {
+  constructor(
+    protected http: HttpClient,
+    protected urlController: string,
+    protected snackBar: MatSnackBar,
+    protected authService: AuthService
+  ) {
     this.api = environment.apiZoo;
+  }
+
+  protected getOptions() {
+    return {
+      headers: {
+        Authorization: `Bearer ${this.authService.getToken()}`
+      }
+    };
   }
 
   /**
@@ -26,7 +40,7 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public getAll(urlController?: string): Observable<TEntity[]> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.get<Response<TEntity[]>>(`${this.api}/${controller}/`).pipe(tap((response) => {
+    return this.http.get<Response<TEntity[]>>(`${this.api}/${controller}/`, this.getOptions()).pipe(tap((response) => {
       if (!response.isSuccess) {
         this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
         throw new Error(response.exceptionMessage);
@@ -43,7 +57,7 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public get(id: string, urlController?: string): Observable<TEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.get<Response<TEntity>>(`${this.api}/${controller}/${id}`).pipe(tap((response) => {
+    return this.http.get<Response<TEntity>>(`${this.api}/${controller}/${id}`, this.getOptions()).pipe(tap((response) => {
       if (!response.isSuccess) {
         this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
         throw new Error(response.exceptionMessage);
@@ -60,7 +74,7 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public create(entity: TEntity, urlController?: string): Observable<TEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.post<Response<TEntity>>(`${this.api}/${controller}/`, entity).pipe(tap((response) => {
+    return this.http.post<Response<TEntity>>(`${this.api}/${controller}/`, entity, this.getOptions()).pipe(tap((response) => {
       if (!response.isSuccess) {
         this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
         throw new Error(response.exceptionMessage);
@@ -77,7 +91,7 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public update(entity: TEntity, urlController?: string): Observable<TEntity | any> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.put<Response<TEntity>>(`${this.api}/${controller}/`, entity).pipe(map(response => {
+    return this.http.put<Response<TEntity>>(`${this.api}/${controller}/`, entity, this.getOptions()).pipe(map(response => {
       if (!response.isSuccess) {
         this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
         throw new Error(response.exceptionMessage);
@@ -95,7 +109,7 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public delete(id: string, urlController?: string): Observable<TEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.delete<Response<TEntity>>(`${this.api}/${controller}/${id}`).pipe(tap((response) => {
+    return this.http.delete<Response<TEntity>>(`${this.api}/${controller}/${id}`, this.getOptions()).pipe(tap((response) => {
       if (!response.isSuccess) {
         this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
         throw new Error(response.exceptionMessage);

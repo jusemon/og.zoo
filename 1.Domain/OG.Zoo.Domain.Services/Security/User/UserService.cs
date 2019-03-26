@@ -2,12 +2,15 @@
 {
     using Entities.Security;
     using Infraestructure.Utils.Exceptions;
+    using Infraestructure.Utils.Security;
     using Interfaces.Security.User;
-    using OG.Zoo.Infraestructure.Utils.Security;
+    using Microsoft.IdentityModel.Tokens;
     using Services.Generics;
     using System;
     using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
     using System.Linq;
+    using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -24,12 +27,18 @@
         private readonly IUserRepository userRepository;
 
         /// <summary>
+        /// The key
+        /// </summary>
+        private readonly string key;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="UserService"/> class.
         /// </summary>
         /// <param name="repository">The repository.</param>
-        public UserService(IUserRepository repository) : base(repository)
+        public UserService(IUserRepository repository, string key) : base(repository)
         {
             this.userRepository = repository;
+            this.key = key;
         }
 
         /// <summary>
@@ -73,13 +82,23 @@
         public async Task Login(User user)
         {
             var result = await this.userRepository.GetBy(user, u => u.Name.ToUpperInvariant().Trim());
-            if (result != null)
+            if (result != null && Cryptography.Validate(result.Password, Encoding.UTF8.GetString(Convert.FromBase64String(user.Password))))
             {
-                if (Cryptography.Validate(result.Password, Encoding.UTF8.GetString(Convert.FromBase64String(user.Password))))
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(this.key);
+                var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    user.Id = result.Id;
-                    return;
-                }
+                    Subject = new ClaimsIdentity(new Claim[] {
+                            new Claim(ClaimTypes.Name, result.Id)
+                        }),
+                    Expires = DateTime.UtcNow.AddHours(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                user.Token = tokenHandler.WriteToken(token);
+                user.Password = string.Empty;
+                user.Id = result.Id;
+                return;
             }
             throw new AppException(AppExceptionTypes.Validation, "Incorrect User or Password.");
         }

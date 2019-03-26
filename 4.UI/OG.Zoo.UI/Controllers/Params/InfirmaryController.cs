@@ -4,6 +4,7 @@
     using Application.Interfaces.Params;
     using Domain.Entities.Params;
     using Generics;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -12,6 +13,7 @@
     /// Infirmary Controller
     /// </summary>
     /// <seealso cref="string" />
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class InfirmaryController : BaseController<Infirmary, string>

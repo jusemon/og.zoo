@@ -16,6 +16,7 @@ export class UserComponent implements OnInit, OnDestroy {
   pass = '**********';
   userForm = this.fb.group({
     id: [null],
+    token: [null],
     name: [null, Validators.compose([
       Validators.required, Validators.minLength(3), Validators.maxLength(15)])],
     password: [null, Validators.compose([

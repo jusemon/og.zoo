@@ -32,7 +32,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.routesService.get().pipe(untilComponentDestroyed(this)).subscribe((routes) => {
       this.routes = routes;
     });
-    this.authService.isAuthenticated.pipe(untilComponentDestroyed(this)).subscribe((value) => {
+    this.authService.authenticated.pipe(untilComponentDestroyed(this)).subscribe((value) => {
       if (value) {
         setTimeout(() => this.navigationVisible = value, 100);
       } else {

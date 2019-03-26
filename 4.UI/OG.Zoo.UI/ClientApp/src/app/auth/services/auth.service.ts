@@ -13,7 +13,7 @@ import { Response } from '../../shared/generics/response';
 })
 export class AuthService {
     private isAuthenticatedSource = new BehaviorSubject(localStorage.getItem(environment.key) != null);
-    isAuthenticated = this.isAuthenticatedSource.asObservable();
+    authenticated = this.isAuthenticatedSource.asObservable();
     api: string;
     key: string;
 
@@ -26,7 +26,7 @@ export class AuthService {
      * Set if user authenticated
      *
      */
-    private setIsAuthenticated(status: boolean) {
+    private setAuthenticated(status: boolean) {
         this.isAuthenticatedSource.next(status);
     }
 
@@ -35,7 +35,7 @@ export class AuthService {
      *
      * @returns true if user is authenticated
      */
-    public getIsAuthenticated(): boolean {
+    public isAuthenticated(): boolean {
         return localStorage.getItem(environment.key) != null;
     }
 
@@ -46,16 +46,28 @@ export class AuthService {
      * @param [urlController] The url controller
      * @returns A observable with the entity
      */
-    public authenticate(entity: UserLogin): Observable<User> {
-        return this.http.post<Response<User>>(`${this.api}/user/login`, entity).pipe(tap((response) => {
+    public authenticate(entity: UserLogin): Observable<UserLogin> {
+        return this.http.post<Response<UserLogin>>(`${this.api}/user/login`, entity).pipe(tap((response) => {
             if (!response.isSuccess) {
                 this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
                 throw new Error(response.exceptionMessage);
             } else {
-                this.setIsAuthenticated(true);
+                this.setAuthenticated(true);
                 return localStorage.setItem(this.key, JSON.stringify(response.result));
             }
         }), map(response => response.result));
+    }
+
+    /**
+     * Get Token
+     */
+    public getToken() {
+        if (this.isAuthenticated()) {
+            const user: UserLogin =  JSON.parse(localStorage.getItem(this.key));
+            return user.token;
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -63,7 +75,7 @@ export class AuthService {
      *
      */
     public deauthenticate(): void {
-        this.setIsAuthenticated(false);
+        this.setAuthenticated(false);
         localStorage.clear();
     }
 }

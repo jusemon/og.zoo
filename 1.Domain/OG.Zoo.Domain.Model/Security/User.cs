@@ -26,5 +26,13 @@
         /// </value>
         [FirestoreProperty]
         public string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the token.
+        /// </summary>
+        /// <value>
+        /// The token.
+        /// </value>
+        public string Token { get; set; }
     }
 }

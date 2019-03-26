@@ -1,7 +1,10 @@
-﻿using Isopoh.Cryptography.Argon2;
-using System;
-namespace OG.Zoo.Infraestructure.Utils.Security
+﻿namespace OG.Zoo.Infraestructure.Utils.Security
 {
+    using Isopoh.Cryptography.Argon2;
+
+    /// <summary>
+    /// Cryptography Class
+    /// </summary>
     public static class Cryptography
     {
         /// <summary>
