@@ -5,6 +5,7 @@ import { UserService } from '../services/user.service';
 import { User } from '../models/user';
 import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-users-list',
@@ -50,6 +51,18 @@ export class UsersListComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  export() {
+    const data = this.dataSource.data.map(u => {
+      return {
+        Name: u.name
+      };
+    });
+    const workSheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const workBook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, 'Users');
+    XLSX.writeFile(workBook, 'users.xlsx', { bookType: 'xlsx', type: 'buffer' });
   }
 
   ngOnDestroy(): void { }

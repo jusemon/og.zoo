@@ -5,6 +5,7 @@ import { CustomListDataSource } from 'src/app/shared/generics/custom-list-dataso
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { AnimalService } from '../services/animal.service';
 import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-animals-list',
@@ -51,6 +52,24 @@ export class AnimalsListComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  export() {
+    const data = this.dataSource.data.map(u => {
+      return {
+        Name: u.name,
+        Age: u.age,
+        Country: u.country,
+        Species: u.species,
+        Subspecies: u.subspecies,
+        'Eating habits': u.eatingHabits,
+        Type: u.type
+      };
+    });
+    const workSheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const workBook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, 'Animals');
+    XLSX.writeFile(workBook, 'animals.xlsx', { bookType: 'xlsx', type: 'buffer' });
   }
 
   ngOnDestroy(): void { }

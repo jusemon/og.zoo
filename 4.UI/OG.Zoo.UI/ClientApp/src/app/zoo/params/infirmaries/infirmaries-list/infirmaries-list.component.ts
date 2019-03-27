@@ -5,6 +5,7 @@ import { CustomListDataSource } from 'src/app/shared/generics/custom-list-dataso
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { InfirmaryService } from '../services/infirmary.service';
 import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-infirmaries-list',
@@ -51,6 +52,20 @@ export class InfirmariesListComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  export() {
+    const data = this.dataSource.data.map(u => {
+      return {
+        Animal: u.animal.name,
+        'Admision date': new Date(u.admissionDate),
+        Diagnosis: u.diagnosis
+      };
+    });
+    const workSheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const workBook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, 'Visits');
+    XLSX.writeFile(workBook, 'infirmary.xlsx', { bookType: 'xlsx', type: 'buffer' });
   }
 
   ngOnDestroy(): void { }
