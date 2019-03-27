@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -7,11 +7,19 @@ import { Route } from '../shared/services/routes';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { AuthService } from '../auth/services/auth.service';
 import { Router } from '@angular/router';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.css']
+  styleUrls: ['./navigation.component.scss'],
+  animations: [
+    trigger('openClose', [
+      state('open', style({  transform: 'rotate(0)' })),
+      state('close', style({  transform: 'rotate(180deg)' })),
+      transition('open => close', [animate('.2s')]),
+      transition('close => open', [animate('.2s')])
+    ])]
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   routes: Route[];
