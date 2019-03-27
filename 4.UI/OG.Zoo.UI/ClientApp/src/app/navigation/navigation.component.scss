@@ -1,7 +1,12 @@
 $sidenav-width: 200px;
 
 .sidenav-container {
-  height: 100%;
+  height: calc(100% - 64px);
+}
+@media (max-width: 599px) {
+  .sidenav-container {
+    height: calc(100% - 56px);
+  }
 }
 
 .sidenav {
