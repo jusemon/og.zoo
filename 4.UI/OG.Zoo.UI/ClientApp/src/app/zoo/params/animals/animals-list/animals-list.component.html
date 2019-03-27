@@ -1,8 +1,13 @@
 <div class="mat-elevation-z8 container">
   <div class="filter">
-    <button class="pull-right" mat-mini-fab color="primary" type="button" [routerLink]="['/params/animals/create']">
-      <mat-icon aria-label="button with a add icon">add</mat-icon>
-    </button>
+    <div class="pull-right">
+        <button mat-mini-fab color="primary" type="button" [routerLink]="['/params/animals/create']">
+          <mat-icon aria-label="button with a add icon">add</mat-icon>
+        </button>
+        <button mat-mini-fab color="accent" type="button" (click)="refresh()">
+          <mat-icon aria-label="button with a add icon">refresh</mat-icon>
+        </button>
+    </div>
   </div>
   <table mat-table #table class="full-width-table" [dataSource]="dataSource" matSort aria-label="Elements">
     <!-- Name Column -->
@@ -50,7 +55,7 @@
         <button mat-mini-fab color="primary" type="button" [routerLink]="['/params/animals/update/', row.id]">
           <mat-icon aria-label="button with a edit icon">edit</mat-icon>
         </button>
-        <button mat-mini-fab color="accent" type="button" (click)="delete(row)">
+        <button mat-mini-fab color="warn" type="button" (click)="delete(row)">
           <mat-icon aria-label="button with a edit icon">delete</mat-icon>
         </button>
       </td>
