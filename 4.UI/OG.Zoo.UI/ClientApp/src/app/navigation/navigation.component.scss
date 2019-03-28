@@ -2,6 +2,9 @@ $sidenav-width: 200px;
 
 .sidenav-container {
   height: calc(100% - 64px);
+  &.login {
+    height: 100%;
+  }
 }
 @media (max-width: 599px) {
   .sidenav-container {
