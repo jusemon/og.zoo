@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { CustomListDataSource } from 'src/app/shared/generics/custom-list-datasource';
 import { MatPaginator, MatSort, MatTable, MatDialog, MatSnackBar } from '@angular/material';
 import { UserService } from '../services/user.service';
 import { User } from '../models/user';
 import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import * as XLSX from 'xlsx';
+import { ServerSideListDataSource } from 'src/app/shared/generics/server-side-list-datasource';
 
 @Component({
   selector: 'app-users-list',
@@ -17,7 +17,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<any>;
 
-  dataSource: CustomListDataSource<User>;
+  dataSource: ServerSideListDataSource<User>;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['name', 'actions'];
@@ -29,14 +29,12 @@ export class UsersListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.dataSource = new CustomListDataSource(this.paginator, this.sort);
-    this.refresh();
+    this.dataSource = new ServerSideListDataSource(this.paginator, this.sort);
+    this.dataSource.setDataSource((params: {[x: string]: any}) => this.userService.getPaginated(params));
   }
 
   refresh() {
-    this.userService.getAll().pipe(untilComponentDestroyed(this)).subscribe((data) => {
-      this.dataSource.setData(data);
-    });
+    this.dataSource.updateData();
   }
 
   delete(user: User) {
@@ -44,9 +42,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().pipe(untilComponentDestroyed(this)).subscribe(result => {
       if (result) {
         this.userService.delete(user.id).pipe(untilComponentDestroyed(this)).subscribe(() => {
-          const data = this.dataSource.data;
-          data.splice(data.findIndex((d) => d.id === user.id), 1);
-          this.dataSource.setData(data);
+          this.refresh();
           this.snackBar.open(`User "${user.name}" has been deleted.`, 'Dismiss', { duration: 3000 });
         });
       }
@@ -54,7 +50,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
   }
 
   export() {
-    const data = this.dataSource.data.map(u => {
+    const data = this.dataSource.getData().map(u => {
       return {
         Name: u.name
       };

@@ -1,5 +1,6 @@
 ﻿namespace OG.Zoo.Application.Interfaces.Generics
 {
+    using Domain.Entities.Generics;
     using DTOs;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -44,5 +45,15 @@
         /// </summary>
         /// <returns></returns>
         Task<Response<IEnumerable<TEntity>>> GetAll();
+
+        /// <summary>
+        /// Gets all.
+        /// </summary>
+        /// <param name="pageIndex">The page.</param>
+        /// <param name="pageSize">The items per page.</param>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="direction">The direction.</param>
+        /// <returns></returns>
+        Task<Response<Paginated<TEntity>>> GetAll(int pageIndex, int pageSize, string sortBy, string direction);
     }
 }

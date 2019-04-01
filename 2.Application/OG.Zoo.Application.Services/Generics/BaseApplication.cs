@@ -1,5 +1,6 @@
 ﻿namespace OG.Zoo.Application.Services.Generics
 {
+    using Domain.Entities.Generics;
     using Domain.Interfaces.Generics;
     using Infraestructure.Utils.Generics;
     using Interfaces.DTOs;
@@ -64,7 +65,7 @@
         /// <returns></returns>
         public Task<Response<TEntity>> Get(TId id)
         {
-            return ApplicationUtil.Try(async () => await this.service.Get(id));
+            return ApplicationUtil.Try(() => this.service.Get(id));
         }
 
         /// <summary>
@@ -73,7 +74,20 @@
         /// <returns></returns>
         public Task<Response<IEnumerable<TEntity>>> GetAll()
         {
-            return ApplicationUtil.Try(async () => await this.service.GetAll());
+            return ApplicationUtil.Try(() => this.service.GetAll());
+        }
+
+        /// <summary>
+        /// Gets all.
+        /// </summary>
+        /// <param name="pageIndex">The page.</param>
+        /// <param name="pageSize">The items per page.</param>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="direction">The direction.</param>
+        /// <returns></returns>
+        public Task<Response<Paginated<TEntity>>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
+        {
+            return ApplicationUtil.Try(() => this.service.GetAll(pageIndex, pageSize, sortBy, direction));
         }
 
         /// <summary>

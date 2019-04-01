@@ -1,11 +1,12 @@
 import { BaseEntity } from './base-entity';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { Response } from './response';
 import { tap, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Paginated } from './paginated';
 
 /**
  * A base for the services
@@ -24,11 +25,18 @@ export class BaseService<TEntity extends BaseEntity> {
     this.api = environment.apiZoo;
   }
 
-  protected getOptions() {
+  /**
+   * Get the options of the request
+   *
+   * @param [params] Dynamic params
+   * @returns Return the options of the request
+   */
+  protected getOptions(params?: {[x: string]: any}) {
     return {
       headers: {
         Authorization: `Bearer ${this.authService.getToken()}`
-      }
+      },
+      params: params ? params : {}
     };
   }
 
@@ -41,6 +49,22 @@ export class BaseService<TEntity extends BaseEntity> {
   public getAll(urlController?: string): Observable<TEntity[]> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
     return this.http.get<Response<TEntity[]>>(`${this.api}/${controller}/`, this.getOptions()).pipe(tap((response) => {
+      if (!response.isSuccess) {
+        this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
+        throw new Error(response.exceptionMessage);
+      }
+    }), map(response => response.result));
+  }
+
+  /**
+   * Get all the entities
+   *
+   * @param [urlController] The url controller
+   * @returns A observable with a array of entities
+   */
+  public getPaginated(params: {[x: string]: any}, urlController?: string): Observable<Paginated<TEntity>> {
+    const controller = typeof (urlController) !== 'undefined' ? urlController : `${this.urlController}/paginated`;
+    return this.http.get<Response<Paginated<TEntity>>>(`${this.api}/${controller}/`, this.getOptions(params)).pipe(tap((response) => {
       if (!response.isSuccess) {
         this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
         throw new Error(response.exceptionMessage);

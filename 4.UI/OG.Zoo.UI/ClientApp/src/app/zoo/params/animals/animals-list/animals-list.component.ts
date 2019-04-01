@@ -6,6 +6,7 @@ import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { AnimalService } from '../services/animal.service';
 import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';
 import * as XLSX from 'xlsx';
+import { ServerSideListDataSource } from 'src/app/shared/generics/server-side-list-datasource';
 
 @Component({
   selector: 'app-animals-list',
@@ -15,7 +16,7 @@ import * as XLSX from 'xlsx';
 export class AnimalsListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  dataSource: CustomListDataSource<Animal>;
+  dataSource: ServerSideListDataSource<Animal>;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['name', 'age', 'country', 'species', 'subspecies', 'eatingHabits', 'type', 'actions'];
@@ -30,14 +31,12 @@ export class AnimalsListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.dataSource = new CustomListDataSource(this.paginator, this.sort);
-    this.refresh();
+    this.dataSource = new ServerSideListDataSource(this.paginator, this.sort);
+    this.dataSource.setDataSource((params: {[x: string]: any}) => this.animalService.getPaginated(params));
   }
 
   refresh() {
-    this.animalService.getAll().pipe(untilComponentDestroyed(this)).subscribe((data) => {
-      this.dataSource.setData(data);
-    });
+    this.dataSource.updateData();
   }
 
   delete(animal: Animal) {
@@ -45,9 +44,7 @@ export class AnimalsListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().pipe(untilComponentDestroyed(this)).subscribe(result => {
       if (result) {
         this.animalService.delete(animal.id).pipe(untilComponentDestroyed(this)).subscribe(() => {
-          const data = this.dataSource.data;
-          data.splice(data.findIndex((d) => d.id === animal.id), 1);
-          this.dataSource.setData(data);
+          this.dataSource.updateData();
           this.snackBar.open(`Animal "${animal.name}" has been deleted.`, 'Dismiss', { duration: 3000 });
         });
       }
@@ -55,7 +52,7 @@ export class AnimalsListComponent implements OnInit, OnDestroy {
   }
 
   export() {
-    const data = this.dataSource.data.map(u => {
+    const data = this.dataSource.getData().map(u => {
       return {
         Name: u.name,
         Age: u.age,

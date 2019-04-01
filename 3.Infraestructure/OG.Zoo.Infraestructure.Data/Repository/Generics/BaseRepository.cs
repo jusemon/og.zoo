@@ -1,11 +1,14 @@
 ﻿namespace OG.Zoo.Infraestructure.Data.Repository.Generics
 {
+    using Domain.Entities.Generics;
     using Domain.Interfaces.Generics;
-    using Infraestructure.Utils.Generics;
+    using Google.Cloud.Firestore;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Utils.Firebase;
+    using Utils.Generics;
     using Utils.Objects;
 
     /// <summary>
@@ -41,6 +44,18 @@
             var db = this.DbFactory.GetDb();
             var document = await db.Collection(name).AddAsync(entity);
             entity.Id = document.Id;
+        }
+
+        /// <summary>
+        /// Updates the specified entity.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <returns></returns>
+        public async Task Update(TEntity entity)
+        {
+            var name = typeof(TEntity).Name;
+            var document = this.DbFactory.GetDb().Collection(name).Document(entity.Id);
+            await document.UpdateAsync(entity.AsDictionary());
         }
 
         /// <summary>
@@ -86,15 +101,34 @@
         }
 
         /// <summary>
-        /// Updates the specified entity.
+        /// Gets all.
         /// </summary>
-        /// <param name="entity">The entity.</param>
+        /// <param name="pageIndex">The page.</param>
+        /// <param name="pageSize">The items per page.</param>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="direction">The direction.</param>
         /// <returns></returns>
-        public async Task Update(TEntity entity)
+        public async Task<Paginated<TEntity>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
         {
+            var sortField = string.IsNullOrEmpty(direction) ? FieldPath.DocumentId : new FieldPath(sortBy.Split('.').Select(s => s.FirstLetterToUpper()).ToArray());
             var name = typeof(TEntity).Name;
-            var document = this.DbFactory.GetDb().Collection(name).Document(entity.Id);
-            await document.UpdateAsync(entity.AsDictionary());
+            var db = this.DbFactory.GetDb();
+            var totalItems = (await db.Collection(name).Select(new string[0]).GetSnapshotAsync()).Count;
+            var snapshot = await (direction == FirebaseConstants.OrderByDescending ? db.Collection(name).OrderByDescending(sortField) : db.Collection(name).OrderBy(sortField))
+                .Offset((pageIndex) * pageSize).Limit(pageSize).GetSnapshotAsync();
+            var results = snapshot.Documents.Select(d =>
+            {
+                var entity = d.ConvertTo<TEntity>();
+                entity.Id = d.Id;
+                return entity;
+            });
+            return new Paginated<TEntity>
+            {
+                Items = results,
+                ItemsPerPage = pageSize,
+                Page = pageIndex,
+                TotalItems = totalItems
+            };
         }
 
         /// <summary>
@@ -114,7 +148,7 @@
                 var e = d.ConvertTo<TEntity>();
                 e.Id = d.Id;
                 return e;
-            }).FirstOrDefault(e => field.Equals(filter(e)) );
+            }).FirstOrDefault(e => field.Equals(filter(e)));
         }
 
         /// <summary>

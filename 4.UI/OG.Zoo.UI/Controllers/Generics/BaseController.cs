@@ -2,6 +2,7 @@
 {
     using Application.Interfaces.DTOs;
     using Application.Interfaces.Generics;
+    using Domain.Entities.Generics;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -78,6 +79,20 @@
         [HttpGet]
         public virtual Task<Response<IEnumerable<TEntity>>> GetAll() {
             return this.application.GetAll();
+        }
+
+        /// <summary>
+        /// Gets all.
+        /// </summary>
+        /// <param name="pageIndex">The page.</param>
+        /// <param name="pageSize">The items per page.</param>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="direction">The direction.</param>
+        /// <returns></returns>
+        [HttpGet("Paginated")]
+        public virtual Task<Response<Paginated<TEntity>>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
+        {
+            return this.application.GetAll(pageIndex, pageSize, sortBy, direction);
         }
     }
 }
