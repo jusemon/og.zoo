@@ -13,6 +13,7 @@
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
+    using Validators;
 
     /// <summary>
     /// User Service
@@ -39,6 +40,7 @@
         {
             this.userRepository = repository;
             this.key = key;
+            this.Validator = new UserGeneralValidator(repository);
         }
 
         /// <summary>
