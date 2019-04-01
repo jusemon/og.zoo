@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { Base64 } from 'src/app/shared/utils/base64';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-user',
@@ -17,9 +18,9 @@ export class UserComponent implements OnInit, OnDestroy {
   userForm = this.fb.group({
     id: [null],
     token: [null],
-    name: [null, Validators.compose([
+    name: ['', Validators.compose([
       Validators.required, Validators.minLength(3), Validators.maxLength(15)])],
-    password: [null, Validators.compose([
+    password: ['', Validators.compose([
       Validators.required, Validators.minLength(8), Validators.maxLength(50)])]
   });
 
@@ -48,7 +49,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if (this.userForm.valid) {
-      const user = this.userForm.value;
+      const user = this.userForm.value as User;
       user.password = Base64.encode(user.password);
       if (this.editMode) {
         if (user.password === Base64.encode(this.pass)) {
@@ -60,7 +61,7 @@ export class UserComponent implements OnInit, OnDestroy {
         });
       } else {
         this.userService.create(user).pipe(untilComponentDestroyed(this)).subscribe(() => {
-          this.snackBar.open(`User "${user.name}" has been created.`, 'Dismiss', { duration: 3000});
+          this.snackBar.open(`User "${user.name}" has been created.`, 'Dismiss', { duration: 3000 });
           this.goBack();
         });
       }
@@ -69,6 +70,10 @@ export class UserComponent implements OnInit, OnDestroy {
 
   goBack() {
     this.router.navigate(['security/users']);
+  }
+
+  trimValue(formControl: FormControl) {
+    formControl.setValue(formControl.value.trim());
   }
 
   ngOnDestroy(): void { }
