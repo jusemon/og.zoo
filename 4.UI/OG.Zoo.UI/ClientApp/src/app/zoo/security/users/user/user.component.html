@@ -14,6 +14,14 @@
           </mat-form-field>
         </div>
         <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput type="email" placeholder="Email" formControlName="email" (change)="trimValue(userForm.get('email'))">
+              <mat-error *ngIf="userForm.controls['email'].hasError('email')">
+                Email is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        <div class="col">
           <mat-form-field class="full-width">
             <input matInput placeholder="Password" formControlName="password" autocomplete="new-password" type="password" (change)="trimValue(userForm.get('password'))">
             <mat-error *ngIf="userForm.controls['password'].hasError('required')">

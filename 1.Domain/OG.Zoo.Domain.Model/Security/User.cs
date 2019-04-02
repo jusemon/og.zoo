@@ -28,6 +28,15 @@
         public string Password { get; set; }
 
         /// <summary>
+        /// Gets or sets the email.
+        /// </summary>
+        /// <value>
+        /// The email.
+        /// </value>
+        [FirestoreProperty]
+        public string Email { get; set; }
+
+        /// <summary>
         /// Gets or sets the token.
         /// </summary>
         /// <value>

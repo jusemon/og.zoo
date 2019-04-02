@@ -5,10 +5,12 @@
     using Infraestructure.Utils.Security;
     using Interfaces.Security.User;
     using Microsoft.IdentityModel.Tokens;
+    using OG.Zoo.Infraestructure.Utils.Injectables.Email;
     using Services.Generics;
     using System;
     using System.Collections.Generic;
     using System.IdentityModel.Tokens.Jwt;
+    using System.IO;
     using System.Linq;
     using System.Security.Claims;
     using System.Text;
@@ -28,17 +30,25 @@
         private readonly IUserRepository userRepository;
 
         /// <summary>
+        /// The email service
+        /// </summary>
+        private readonly IEmailService emailService;
+
+        /// <summary>
         /// The key
         /// </summary>
         private readonly string key;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserService"/> class.
+        /// Initializes a new instance of the <see cref="UserService" /> class.
         /// </summary>
         /// <param name="repository">The repository.</param>
-        public UserService(IUserRepository repository, string key) : base(repository)
+        /// <param name="emailService">The email service.</param>
+        /// <param name="key">The key.</param>
+        public UserService(IUserRepository repository, IEmailService emailService, string key) : base(repository)
         {
             this.userRepository = repository;
+            this.emailService = emailService;
             this.key = key;
             this.Validator = new UserGeneralValidator(repository);
         }
@@ -86,23 +96,42 @@
             var result = await this.userRepository.GetBy(user, u => u.Name.ToUpperInvariant().Trim());
             if (result != null && Cryptography.Validate(result.Password, Encoding.UTF8.GetString(Convert.FromBase64String(user.Password))))
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.UTF8.GetBytes(this.key);
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[] {
-                            new Claim(ClaimTypes.Name, result.Id)
-                        }),
-                    Expires = DateTime.UtcNow.AddHours(7),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                user.Token = tokenHandler.WriteToken(token);
+                user.Token = this.GetToken(user, this.key);
                 user.Password = string.Empty;
                 user.Id = result.Id;
                 return;
             }
             throw new AppException(AppExceptionTypes.Validation, "Incorrect User or Password.");
+        }
+
+        /// <summary>
+        /// Recoveries the specified user.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        /// <exception cref="AppException">Incorrect User or Password.</exception>
+        public async Task<User> GetUserWithRecoveryToken(string email)
+        {
+            var user = new User { Email = email };
+            var result = await this.userRepository.GetBy(user, u => u.Email.ToUpperInvariant().Trim());
+            if (result != null)
+            {
+                return null;
+            }
+            user.Token = this.GetToken(result, user.Password);
+            return user;
+        }
+
+        /// <summary>
+        /// Sends the recovery email.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="token">The token.</param>
+        /// <returns></returns>
+        public async Task SendRecoveryEmail(User user, string token)
+        {
+            var template = await File.ReadAllTextAsync("Templates/EmailRecovery.cshtml");
+            emailService.Send(user.Name, "Recovery Password", template, user, true);
         }
 
         /// <summary>
@@ -125,6 +154,28 @@
         {
             var results = await base.GetAll();
             return results.Select(r => { r.Password = string.Empty; return r; });
+        }
+
+        /// <summary>
+        /// Gets the token.
+        /// </summary>
+        /// <param name="result">The result.</param>
+        /// <returns></returns>
+        private string GetToken(User result, string secretKey)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(secretKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[] {
+                            new Claim(ClaimTypes.Name, result.Id)
+                        }),
+                Expires = DateTime.UtcNow.AddHours(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.WriteToken(securityToken);
+            return token;
         }
     }
 }

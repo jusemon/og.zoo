@@ -22,6 +22,8 @@ export class UserComponent implements OnInit, OnDestroy {
     token: [null],
     name: ['', Validators.compose([
       Validators.required, Validators.minLength(3), Validators.maxLength(15)])],
+    email: ['', Validators.compose([
+      Validators.required, Validators.minLength(3), Validators.maxLength(50)])],
     password: ['', Validators.compose([
       Validators.required, Validators.minLength(8), Validators.maxLength(50)])]
   });

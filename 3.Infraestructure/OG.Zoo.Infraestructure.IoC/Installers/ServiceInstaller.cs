@@ -6,6 +6,7 @@
     using LightInject;
     using OG.Zoo.Domain.Interfaces.Security.User;
     using OG.Zoo.Domain.Services.Security.User;
+    using OG.Zoo.Infraestructure.Utils.Injectables.Email;
     using System.Linq;
 
     /// <summary>
@@ -35,7 +36,7 @@
         {
             var servicesConfig = this.configure.GetServicesConfig();
             serviceRegistry.Register<IUserService>(
-                (factory) => new UserService(factory.GetInstance<IUserRepository>(), servicesConfig.Key));
+                (f) => new UserService(f.GetInstance<IUserRepository>(), f.GetInstance<IEmailService>(), servicesConfig.Key));
             serviceRegistry.RegisterAssembly(
                 typeof(BaseService<,>).Assembly, (s, _) =>
                 s.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IBaseService<,>)));
