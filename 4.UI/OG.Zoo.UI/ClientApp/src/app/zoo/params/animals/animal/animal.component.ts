@@ -5,6 +5,8 @@ import { MatSnackBar } from '@angular/material';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { AnimalService } from '../services/animal.service';
 import { Animal } from '../models/animal';
+import { LoadingService } from 'src/app/shared/loading/loading.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-animal',
@@ -29,7 +31,8 @@ export class AnimalComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private animalService: AnimalService) { }
+    private animalService: AnimalService,
+    private loadingService: LoadingService) { }
 
   ngOnInit() {
     this.route.params.pipe(untilComponentDestroyed(this)).subscribe((data) => {
@@ -48,15 +51,17 @@ export class AnimalComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if (this.animalForm.valid) {
+      this.loadingService.show();
+      const finalizeFunction = finalize(() => this.loadingService.hide());
       const animal: Animal = this.animalForm.value;
       if (this.editMode) {
-        this.animalService.update(animal).pipe(untilComponentDestroyed(this)).subscribe(() => {
+        this.animalService.update(animal).pipe(untilComponentDestroyed(this), finalizeFunction).subscribe(() => {
           this.snackBar.open(`Animal "${animal.name}" has been updated.`, 'Dismiss', { duration: 3000 });
           this.goBack();
         });
       } else {
-        this.animalService.create(animal).pipe(untilComponentDestroyed(this)).subscribe(() => {
-          this.snackBar.open(`Animal "${animal.name}" has been created.`, 'Dismiss', { duration: 3000});
+        this.animalService.create(animal).pipe(untilComponentDestroyed(this), finalizeFunction).subscribe(() => {
+          this.snackBar.open(`Animal "${animal.name}" has been created.`, 'Dismiss', { duration: 3000 });
           this.goBack();
         });
       }

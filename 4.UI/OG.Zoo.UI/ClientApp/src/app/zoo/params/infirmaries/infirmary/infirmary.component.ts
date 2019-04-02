@@ -8,9 +8,10 @@ import { Infirmary } from '../models/infirmary';
 import { AnimalService } from '../../animals/services/animal.service';
 import { Animal } from '../../animals/models/animal';
 import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, finalize } from 'rxjs/operators';
 import { isUndefined, isNullOrUndefined } from 'util';
 import { BaseEntity } from 'src/app/shared/generics/base-entity';
+import { LoadingService } from 'src/app/shared/loading/loading.service';
 
 @Component({
   selector: 'app-infirmary',
@@ -36,7 +37,8 @@ export class InfirmaryComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private infirmaryService: InfirmaryService,
-    private animalService: AnimalService) { }
+    private animalService: AnimalService,
+    private loadingService: LoadingService) { }
 
   ngOnInit() {
     this.getAnimals();
@@ -77,16 +79,18 @@ export class InfirmaryComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if (this.infirmaryForm.valid) {
+      this.loadingService.show();
+      const finalizeFunction = finalize(() => this.loadingService.hide());
       const infirmary: Infirmary = this.infirmaryForm.value;
       infirmary.idAnimal = `Animal/${infirmary.animal.id}`;
       if (this.editMode) {
-        this.infirmaryService.update(infirmary).pipe(untilComponentDestroyed(this)).subscribe(() => {
+        this.infirmaryService.update(infirmary).pipe(untilComponentDestroyed(this), finalizeFunction).subscribe(() => {
           this.snackBar.open(`Infirmary "${infirmary.admissionDate}" has been updated.`, 'Dismiss', { duration: 3000 });
           this.goBack();
         });
       } else {
         infirmary.admissionDate = new Date();
-        this.infirmaryService.create(infirmary).pipe(untilComponentDestroyed(this)).subscribe(() => {
+        this.infirmaryService.create(infirmary).pipe(untilComponentDestroyed(this), finalizeFunction).subscribe(() => {
           this.snackBar.open(`Infirmary "${infirmary.admissionDate}" has been created.`, 'Dismiss', { duration: 3000 });
           this.goBack();
         });
@@ -107,7 +111,7 @@ export class InfirmaryComponent implements OnInit, OnDestroy {
     };
   }
 
-  clearInput(inputName) {
+  clearInput(inputName: string) {
     this.infirmaryForm.controls[inputName].setValue('');
     setTimeout(() => {
       const doc = document.activeElement as HTMLInputElement;
