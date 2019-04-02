@@ -8,6 +8,7 @@ import { NavigationModule } from './navigation/navigation.module';
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './shared/services/interceptor.service';
+import { LoadingComponent } from './shared/loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { InterceptorService } from './shared/services/interceptor.service';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true }
   ],
+  entryComponents: [LoadingComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
