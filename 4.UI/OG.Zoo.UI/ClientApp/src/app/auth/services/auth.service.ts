@@ -1,11 +1,10 @@
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { tap, map, catchError } from 'rxjs/operators';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { Injectable } from '@angular/core';
 import { UserLogin } from '../models/user';
-import { User } from '../../zoo/security/users/models/user';
 import { Response } from '../../shared/generics/response';
 
 @Injectable({
@@ -17,7 +16,7 @@ export class AuthService {
     api: string;
     key: string;
 
-    constructor(private http: HttpClient, private snackBar: MatSnackBar) {
+    constructor(private http: HttpClient, private snackBar: MatSnackBar, private dialog: MatDialog) {
         this.api = environment.apiZoo;
         this.key = environment.key;
     }
@@ -26,7 +25,7 @@ export class AuthService {
      * Set if user authenticated
      *
      */
-    private setAuthenticated(status: boolean) {
+    public setAuthenticated(status: boolean) {
         this.isAuthenticatedSource.next(status);
     }
 
@@ -37,6 +36,16 @@ export class AuthService {
      */
     public isAuthenticated(): boolean {
         return localStorage.getItem(environment.key) != null;
+    }
+
+    /**
+     * Checks the token
+     *
+     * @returns A observable with true or false
+     */
+    public checkToken(): Observable<boolean> {
+        return this.http.get<Response<boolean>>(`${this.api}/user/checkToken`).pipe(
+            map(res => res.result));
     }
 
     /**
@@ -63,7 +72,7 @@ export class AuthService {
      */
     public getToken() {
         if (this.isAuthenticated()) {
-            const user: UserLogin =  JSON.parse(localStorage.getItem(this.key));
+            const user: UserLogin = JSON.parse(localStorage.getItem(this.key));
             return user.token;
         } else {
             return '';

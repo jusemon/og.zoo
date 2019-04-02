@@ -7,7 +7,7 @@
       <div class="row">
         <div class="col">
           <mat-form-field class="full-width">
-            <input matInput placeholder="Name" formControlName="name">
+            <input matInput placeholder="Name" formControlName="name" (change)="trimValue(userForm.get('name'))">
             <mat-error *ngIf="userForm.controls['name'].hasError('required')">
               User is <strong>required</strong>
             </mat-error>
@@ -15,7 +15,7 @@
         </div>
         <div class="col">
           <mat-form-field class="full-width">
-            <input matInput placeholder="Password" type="password" formControlName="password">
+            <input matInput placeholder="Password" formControlName="password" autocomplete="new-password" type="password" (change)="trimValue(userForm.get('password'))">
             <mat-error *ngIf="userForm.controls['password'].hasError('required')">
               Password is <strong>required</strong>
             </mat-error>

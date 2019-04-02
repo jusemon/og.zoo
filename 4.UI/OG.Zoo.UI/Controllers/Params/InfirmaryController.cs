@@ -2,11 +2,11 @@
 {
     using Application.Interfaces.DTOs;
     using Application.Interfaces.Params;
+    using Domain.Entities.Generics;
     using Domain.Entities.Params;
     using Generics;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -47,11 +47,15 @@
         /// <summary>
         /// Gets all with relations.
         /// </summary>
+        /// <param name="pageIndex">Index of the page.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="direction">The direction.</param>
         /// <returns></returns>
         [HttpGet("GetAllWithRelations")]
-        public Task<Response<IEnumerable<Infirmary>>> GetAllWithRelations()
+        public Task<Response<Paginated<Infirmary>>> GetAllWithRelations(int pageIndex, int pageSize, string sortBy, string direction)
         {
-            return this.infirmaryApplication.GetAllWithRelations();
+            return this.infirmaryApplication.GetAllWithRelations(pageIndex, pageSize, sortBy, direction);
         }
     }
 }

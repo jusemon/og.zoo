@@ -1,8 +1,8 @@
 ﻿namespace OG.Zoo.Domain.Interfaces.Params.Infirmary
 {
+    using Entities.Generics;
     using Entities.Params;
     using Generics;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -21,7 +21,11 @@
         /// <summary>
         /// Gets all with relations.
         /// </summary>
+        /// <param name="pageIndex">Index of the page.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="direction">The direction.</param>
         /// <returns></returns>
-        Task<IEnumerable<Infirmary>> GetAllWithRelations();
+        Task<Paginated<Infirmary>> GetAllWithRelations(int pageIndex, int pageSize, string sortBy, string direction);
     }
 }

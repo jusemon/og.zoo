@@ -16,5 +16,15 @@
         /// The firebase configuration
         /// </summary>
         public static readonly string FirebaseConfig = "FirebaseConfig";
+
+        /// <summary>
+        /// The order by descending
+        /// </summary>
+        public static readonly string OrderByDescending = "desc";
+
+        /// <summary>
+        /// The document identifier
+        /// </summary>
+        public static readonly string DocumentId = "Id";
     }
 }

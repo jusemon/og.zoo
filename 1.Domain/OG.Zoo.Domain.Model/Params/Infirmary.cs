@@ -44,6 +44,7 @@
         /// <value>
         /// The animal.
         /// </value>
+        [FirestoreProperty]
         public Animal Animal { get; set; }
     }
 }

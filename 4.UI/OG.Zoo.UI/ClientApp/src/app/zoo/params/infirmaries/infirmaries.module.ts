@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { InfirmariesComponent } from './infirmaries.component';
 import { InfirmariesListComponent } from './infirmaries-list/infirmaries-list.component';
 import { InfirmaryComponent } from './infirmary/infirmary.component';
@@ -22,6 +22,7 @@ const routes: Route[] = [
     RouterModule.forChild(routes),
     ReactiveFormsModule
   ],
-  entryComponents: [ConfirmComponent]
+  entryComponents: [ConfirmComponent],
+  providers: [DatePipe]
 })
 export class InfirmariesModule { }

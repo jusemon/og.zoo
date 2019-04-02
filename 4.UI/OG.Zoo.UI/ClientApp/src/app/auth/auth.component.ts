@@ -5,6 +5,8 @@ import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { MatSnackBar } from '@angular/material';
 import { Route, Router } from '@angular/router';
 import { Base64 } from '../shared/utils/base64';
+import { LoadingService } from '../shared/loading/loading.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auth',
@@ -20,22 +22,24 @@ export class AuthComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    private router: Router) { }
+    private router: Router,
+    private loadingService: LoadingService) { }
 
   ngOnInit() {
   }
 
   onSubmit() {
     if (this.authForm.valid) {
-        const user = this.authForm.value;
-        user.password = Base64.encode(user.password);
-        this.authService.authenticate(user).pipe(untilComponentDestroyed(this)).subscribe(() => {
-          this.snackBar.open(`User "${user.name}" has logged on.`, 'Dismiss', { duration: 3000});
-          this.router.navigate(['home']);
-        });
+      this.loadingService.show();
+      const user = this.authForm.value;
+      user.password = Base64.encode(user.password);
+      this.authService.authenticate(user).pipe(untilComponentDestroyed(this), finalize(() => this.loadingService.hide())).subscribe(() => {
+        this.snackBar.open(`User "${user.name}" has logged on.`, 'Dismiss', { duration: 3000 });
+        this.router.navigate(['home']);
+      });
     }
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
 
 }

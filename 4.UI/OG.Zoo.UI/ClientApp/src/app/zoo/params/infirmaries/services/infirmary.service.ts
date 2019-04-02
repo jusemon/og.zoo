@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { Response } from 'src/app/shared/generics/response';
 import { tap, map } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Paginated } from 'src/app/shared/generics/paginated';
 
 @Injectable({
   providedIn: 'root'
@@ -22,14 +23,8 @@ export class InfirmaryService extends BaseService<Infirmary> {
    * @param [urlController] The url controller
    * @returns A observable with a array of entities
    */
-  public getAllWithRelations(): Observable<Infirmary[]> {
-    return this.http.get<Response<Infirmary[]>>(`${this.api}/${this.urlController}/getAllWithRelations`, this.getOptions())
-    .pipe(tap((response) => {
-      if (!response.isSuccess) {
-        this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
-        throw new Error(response.exceptionMessage);
-      }
-    }), map(response => response.result));
+  public getAllWithRelations(params: { [x: string]: any }): Observable<Paginated<Infirmary>> {
+    return this.getPaginated(params, `${this.urlController}/getAllWithRelations`);
   }
 
   /**
@@ -39,13 +34,7 @@ export class InfirmaryService extends BaseService<Infirmary> {
    * @param [urlController] The url controller
    * @returns A observable with the entity
    */
-  public getWithRelations(id: string,): Observable<Infirmary> {   
-     return this.http.get<Response<Infirmary>>(`${this.api}/${this.urlController}/getWithRelations/${id}`, this.getOptions())
-     .pipe(tap((response) => {
-      if (!response.isSuccess) {
-        this.snackBar.open(`An error has ocurred.`, 'Dismiss', { duration: 3000 });
-        throw new Error(response.exceptionMessage);
-      }
-    }), map(response => response.result));
+  public getWithRelations(id: string): Observable<Infirmary> {
+    return this.get(id, `${this.urlController}/getWithRelations`);
   }
 }

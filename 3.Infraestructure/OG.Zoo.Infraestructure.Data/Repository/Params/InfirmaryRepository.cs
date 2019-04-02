@@ -1,12 +1,14 @@
 ﻿namespace OG.Zoo.Infraestructure.Data.Repository.Params
 {
+    using Domain.Entities.Generics;
     using Domain.Entities.Params;
     using Domain.Interfaces.Params.Infirmary;
     using Generics;
     using Google.Cloud.Firestore;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Utils.Firebase;
+    using Utils.Objects;
 
     /// <summary>
     /// Infirmary Repository
@@ -43,11 +45,19 @@
         /// <summary>
         /// Gets all with relations.
         /// </summary>
+        /// <param name="pageIndex">Index of the page.</param>
+        /// <param name="pageSize">Size of the page.</param>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="direction">The direction.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Infirmary>> GetAllWithRelations()
+        public async Task<Paginated<Infirmary>> GetAllWithRelations(int pageIndex, int pageSize, string sortBy, string direction)
         {
+            var sortField = string.IsNullOrEmpty(direction) ? FieldPath.DocumentId : new FieldPath(sortBy.Split('.').Select(s => s.FirstLetterToUpper()).ToArray());
+            var name = typeof(Infirmary).Name;
             var db = this.DbFactory.GetDb();
-            var snapshot = await db.Collection(typeof(Infirmary).Name).GetSnapshotAsync();
+            var totalItems = (await db.Collection(name).Select(new string[0]).GetSnapshotAsync()).Count;
+            var snapshot = await (direction == FirebaseConstants.OrderByDescending ? db.Collection(name).OrderByDescending(sortField) : db.Collection(name).OrderBy(sortField))
+                .Offset((pageIndex) * pageSize).Limit(pageSize).GetSnapshotAsync();
             var snapshotAnimal = await db.Collection(typeof(Animal).Name).Select(FieldPath.DocumentId, new FieldPath("Name"))
                 .GetSnapshotAsync();
 
@@ -57,18 +67,24 @@
                 entity.Id = d.Id;
                 return entity;
             }).ToList();
-            
+
             foreach (var infirmary in entities)
             {
                 var key = infirmary.IdAnimal.Split('/').Last();
                 var animal = snapshotAnimal.FirstOrDefault(d => d.Id == key)?.ConvertTo<Animal>();
-                if (animal!=null)
+                if (animal != null)
                 {
                     animal.Id = key;
                     infirmary.Animal = animal;
                 }
             }
-            return entities;
+            return new Paginated<Infirmary>
+            {
+                Items = entities,
+                ItemsPerPage = pageSize,
+                Page = pageIndex,
+                TotalItems = totalItems
+            };
         }
     }
 }

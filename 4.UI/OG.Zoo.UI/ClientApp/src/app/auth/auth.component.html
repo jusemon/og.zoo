@@ -10,7 +10,7 @@
           <div class="col">
             <mat-form-field appearance="outline">
               <mat-label>User</mat-label>
-              <input formControlName="name" matInput>
+              <input autocomplete="username" formControlName="name" matInput>
               <mat-icon matSuffix color="primary">portrait</mat-icon>
               <mat-error *ngIf="authForm.controls['name'].hasError('required')">
                 Name is <strong>required</strong>
@@ -22,7 +22,7 @@
           <div class="col">
             <mat-form-field appearance="outline">
               <mat-label>Password</mat-label>
-              <input formControlName="password" type="password" matInput>
+              <input autocomplete="current-password" formControlName="password" type="password" matInput>
               <mat-icon color="primary" matSuffix>vpn_key</mat-icon>
               <mat-error *ngIf="authForm.controls['password'].hasError('required')">
                 Password is <strong>required</strong>

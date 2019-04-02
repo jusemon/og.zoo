@@ -3,10 +3,10 @@
     using Application.Interfaces.DTOs;
     using Application.Interfaces.Security;
     using Domain.Entities.Security;
+    using Generics;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
-    using UI.Controllers.Generics;
 
     /// <summary>
     /// User Application
@@ -41,6 +41,21 @@
         public Task<Response<User>> Login([FromBody] User user)
         {
             return this.userApplication.Login(user);
+        }
+
+        /// <summary>
+        /// Logins the specified user.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        [HttpGet("CheckSession")]
+        public Response<bool> CheckSession()
+        {
+            return new Response<bool>
+            {
+                IsSuccess = true,
+                Result = true
+            };
         }
     }
 }

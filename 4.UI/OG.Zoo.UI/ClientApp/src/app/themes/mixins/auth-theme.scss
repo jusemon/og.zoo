@@ -20,6 +20,9 @@
             .mat-card-header * {
                 width: calc(100% - 8px);
                 text-align: center;
+                .mat-card-title {
+                    color: mat-color($primary);
+                }
             }
             .mat-card-content {
                 height: 160px;

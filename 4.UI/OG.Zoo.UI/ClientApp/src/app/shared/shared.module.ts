@@ -5,13 +5,15 @@ import {
   MatButtonModule, MatSidenavModule, MatIconModule, MatListModule,
   MatTableModule, MatPaginatorModule, MatSortModule, MatInputModule,
   MatSelectModule, MatRadioModule, MatCardModule, MatSnackBarModule,
-  MatDialogModule, MatFormFieldModule, MatAutocompleteModule
+  MatDialogModule, MatFormFieldModule, MatAutocompleteModule,
+  MatProgressBarModule, MatProgressSpinnerModule
 } from '@angular/material';
 import { ConfirmComponent } from './dialogs/confirm/confirm.component';
+import { LoadingComponent } from './loading/loading.component';
 
 
 @NgModule({
-  declarations: [ConfirmComponent],
+  declarations: [ConfirmComponent, LoadingComponent],
   exports: [
     LayoutModule,
     MatToolbarModule,
@@ -31,11 +33,14 @@ import { ConfirmComponent } from './dialogs/confirm/confirm.component';
     MatSnackBarModule,
     MatDialogModule,
     MatAutocompleteModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
     ConfirmComponent
   ],
   imports: [
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatProgressSpinnerModule
   ]
 })
 export class SharedModule { }

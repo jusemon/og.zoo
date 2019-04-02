@@ -1,8 +1,9 @@
 ﻿namespace OG.Zoo.Domain.Services.Generics
 {
+    using Entities.Generics;
     using FluentValidation;
-    using Infraestructure.Utils.Generics;
     using Infraestructure.Utils.Exceptions;
+    using Infraestructure.Utils.Generics;
     using Interfaces.Generics;
     using System.Collections.Generic;
     using System.Linq;
@@ -76,6 +77,17 @@
         public virtual async Task<IEnumerable<TEntity>> GetAll()
         {
             return await this.repository.GetAll();
+        }
+
+        /// <summary>
+        /// Gets all.
+        /// </summary>
+        /// <param name="pageIndex">The page.</param>
+        /// <param name="pageSize">The items per page.</param>
+        /// <returns></returns>
+        public async Task<Paginated<TEntity>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
+        {
+            return await this.repository.GetAll(pageIndex, pageSize, sortBy, direction);
         }
 
         /// <summary>

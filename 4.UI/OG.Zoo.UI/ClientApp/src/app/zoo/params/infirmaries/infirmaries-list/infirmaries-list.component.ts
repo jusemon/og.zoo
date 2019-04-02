@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog, MatSnackBar } from '@angular/material';
 import { Infirmary } from '../models/infirmary';
-import { CustomListDataSource } from 'src/app/shared/generics/custom-list-datasource';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { InfirmaryService } from '../services/infirmary.service';
 import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';
+import * as XLSX from 'xlsx';
+import { ServerSideListDataSource } from 'src/app/shared/generics/server-side-list-datasource';
 
 @Component({
   selector: 'app-infirmaries-list',
@@ -14,10 +15,10 @@ import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.compone
 export class InfirmariesListComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  dataSource: CustomListDataSource<Infirmary>;
+  dataSource: ServerSideListDataSource<Infirmary>;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['animal', 'admissionDate', 'diagnosis', 'actions'];
+  displayedColumns = ['animal.name', 'admissionDate', 'diagnosis', 'actions'];
 
   /**
    *
@@ -29,14 +30,13 @@ export class InfirmariesListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.dataSource = new CustomListDataSource(this.paginator, this.sort);
+    this.dataSource = new ServerSideListDataSource(this.paginator, this.sort);
+    this.dataSource.setDataSource((params: {[x: string]: any}) => this.infirmaryService.getAllWithRelations(params));
     this.refresh();
   }
 
   refresh() {
-    this.infirmaryService.getAllWithRelations().pipe(untilComponentDestroyed(this)).subscribe((data) => {
-      this.dataSource.setData(data);
-    });
+    this.dataSource.updateData();
   }
 
   delete(infirmary: Infirmary) {
@@ -44,13 +44,25 @@ export class InfirmariesListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().pipe(untilComponentDestroyed(this)).subscribe(result => {
       if (result) {
         this.infirmaryService.delete(infirmary.id).pipe(untilComponentDestroyed(this)).subscribe(() => {
-          const data = this.dataSource.data;
-          data.splice(data.findIndex((d) => d.id === infirmary.id), 1);
-          this.dataSource.setData(data);
+          this.refresh();
           this.snackBar.open(`Infirmary "${infirmary.admissionDate}" has been deleted.`, 'Dismiss', { duration: 3000 });
         });
       }
     });
+  }
+
+  export() {
+    const data = this.dataSource.getData().map(u => {
+      return {
+        Animal: u.animal.name,
+        'Admision date': new Date(u.admissionDate),
+        Diagnosis: u.diagnosis
+      };
+    });
+    const workSheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const workBook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, 'Visits');
+    XLSX.writeFile(workBook, 'infirmary.xlsx', { bookType: 'xlsx', type: 'buffer' });
   }
 
   ngOnDestroy(): void { }

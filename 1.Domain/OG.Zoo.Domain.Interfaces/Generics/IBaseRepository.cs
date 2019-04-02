@@ -1,5 +1,6 @@
 ﻿namespace OG.Zoo.Domain.Interfaces.Generics
 {
+    using Entities.Generics;
     using Infraestructure.Utils.Generics;
     using System;
     using System.Collections.Generic;
@@ -61,5 +62,14 @@
         /// <returns></returns>
         Task<IEnumerable<TEntity>> GetAllBy<T>(TEntity entity, Func<TEntity, T> field) where T : class;
 
+        /// <summary>
+        /// Gets all.
+        /// </summary>
+        /// <param name="pageIndex">The page.</param>
+        /// <param name="pageSize">The items per page.</param>
+        /// <param name="sortBy">The sort by.</param>
+        /// <param name="direction">The direction.</param>
+        /// <returns></returns>
+        Task<Paginated<TEntity>> GetAll(int pageIndex, int pageSize, string sortBy, string direction);
     }
 }
