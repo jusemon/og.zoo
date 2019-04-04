@@ -3,6 +3,8 @@
     using Google.Cloud.Firestore;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Dynamic;
     using System.Linq;
     using System.Reflection;
 
@@ -50,6 +52,38 @@
         }
 
         /// <summary>
+        /// Ases the dictionary.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">The source.</param>
+        /// <param name="bindingAttr">The binding attribute.</param>
+        /// <returns></returns>
+        public static IDictionary<string, T> AsDictionary<T>(this object source, BindingFlags bindingAttr = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+        {
+            return source.GetType().GetProperties(bindingAttr).ToDictionary
+            (
+                propInfo => propInfo.Name,
+                propInfo => (T)GetValue(source, propInfo)
+            );
+        }
+
+        /// <summary>
+        /// Converts to dynamic.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        public static dynamic ToDynamic(this object source)
+        {
+            IDictionary<string, object> expando = new ExpandoObject();
+            foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(source.GetType()))
+            {
+                expando.Add(property.Name, property.GetValue(source));
+            }
+            return expando as ExpandoObject;
+        }
+
+
+        /// <summary>
         /// Gets the value.
         /// </summary>
         /// <param name="source">The source.</param>
@@ -63,7 +97,7 @@
                 return propInfo.GetValue(source, null);
             }
             var ctor = converter.GetConstructor(new Type[0]);
-            var documentRefereceConverter = (IFirestoreConverter<string>) ctor.Invoke(new object[] { });
+            var documentRefereceConverter = (IFirestoreConverter<string>)ctor.Invoke(new object[] { });
             var value = propInfo.GetValue(source, null).ToString();
             return documentRefereceConverter.ToFirestore(value);
         }

@@ -67,6 +67,15 @@ export class AuthService {
         }), map(response => response.result));
     }
 
+    sendRecovery(email: string): Observable<boolean> {
+        return this.http.get<Response<boolean>>(`${this.api}/user/sendRecovery`, { params: { email } }).pipe(tap((response) => {
+            if (!response.isSuccess) {
+                this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
+                throw new Error(response.exceptionMessage);
+            }
+        }), map(response => response.result));
+    }
+
     /**
      * Get Token
      */

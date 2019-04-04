@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthComponent } from './auth.component';
 import { Route, RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { InputDialogComponent } from '../shared/dialogs/input-dialog/input-dialog.component';
 
 const routes: Route[] = [
     { path: '', component: AuthComponent }
@@ -16,6 +17,7 @@ const routes: Route[] = [
     RouterModule.forChild(routes),
     SharedModule,
     ReactiveFormsModule
-  ]
+  ],
+  entryComponents: [InputDialogComponent]
 })
 export class AuthModule { }

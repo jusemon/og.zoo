@@ -2,10 +2,12 @@
 {
     using Entities.Security;
     using Infraestructure.Utils.Exceptions;
+    using Infraestructure.Utils.Injectables.Email;
     using Infraestructure.Utils.Security;
     using Interfaces.Security.User;
+    using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.IdentityModel.Tokens;
-    using OG.Zoo.Infraestructure.Utils.Injectables.Email;
+    using OG.Zoo.Infraestructure.Utils.Objects;
     using Services.Generics;
     using System;
     using System.Collections.Generic;
@@ -96,9 +98,9 @@
             var result = await this.userRepository.GetBy(user, u => u.Name.ToUpperInvariant().Trim());
             if (result != null && Cryptography.Validate(result.Password, Encoding.UTF8.GetString(Convert.FromBase64String(user.Password))))
             {
-                user.Token = this.GetToken(user, this.key);
-                user.Password = string.Empty;
                 user.Id = result.Id;
+                user.Password = string.Empty;
+                user.Token = this.GetToken(user, this.key);
                 return;
             }
             throw new AppException(AppExceptionTypes.Validation, "Incorrect User or Password.");
@@ -113,13 +115,13 @@
         public async Task<User> GetUserWithRecoveryToken(string email)
         {
             var user = new User { Email = email };
-            var result = await this.userRepository.GetBy(user, u => u.Email.ToUpperInvariant().Trim());
-            if (result != null)
+            var result = await this.userRepository.GetBy(user, u => u.Email?.ToUpperInvariant()?.Trim());
+            if (result == null)
             {
                 return null;
             }
-            user.Token = this.GetToken(result, user.Password);
-            return user;
+            result.Token = this.GetToken(result, result.Password);
+            return result;
         }
 
         /// <summary>
@@ -128,10 +130,12 @@
         /// <param name="user">The user.</param>
         /// <param name="token">The token.</param>
         /// <returns></returns>
-        public async Task SendRecoveryEmail(User user, string token)
+        public async Task SendRecoveryEmail(User user, string url)
         {
             var template = await File.ReadAllTextAsync("Templates/EmailRecovery.cshtml");
-            emailService.Send(user.Name, "Recovery Password", template, user, true);
+            
+            var urlToken = QueryHelpers.AddQueryString($"{url}/{{0}}", new { token = user?.Token }.AsDictionary<string>());
+            emailService.Send(user.Email, "Recovery Password", template, new { user.Name, UrlBase = url, UrlToken = urlToken }.ToDynamic(), true);
         }
 
         /// <summary>

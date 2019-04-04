@@ -1,11 +1,11 @@
 ﻿namespace OG.Zoo.Application.Services.Security
 {
-    using System.Threading.Tasks;
     using Domain.Entities.Security;
     using Domain.Interfaces.Security.User;
     using Generics;
+    using Interfaces.DTOs;
     using Interfaces.Security;
-    using OG.Zoo.Application.Interfaces.DTOs;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// User Application
@@ -37,6 +37,20 @@
             return ApplicationUtil.Try(async () => {
                 await this.userService.Login(user);
                 return user;
+            });
+        }
+
+        /// <summary>
+        /// Sends the recovery.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <returns></returns>
+        public Task<Response<bool>> SendRecovery(string email, string uri)
+        {
+            return ApplicationUtil.Try(async () => {
+                var user = await this.userService.GetUserWithRecoveryToken(email);
+                await this.userService.SendRecoveryEmail(user, uri);
+                return true;
             });
         }
     }

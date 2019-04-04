@@ -16,5 +16,20 @@
         /// <param name="user">The user.</param>
         /// <returns></returns>
         Task Login(User user);
+
+        /// <summary>
+        /// Gets the user with recovery token.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <returns></returns>
+        Task<User> GetUserWithRecoveryToken(string email);
+
+        /// <summary>
+        /// Sends the recovery email.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="url">The URL.</param>
+        /// <returns></returns>
+        Task SendRecoveryEmail(User user, string url);
     }
 }

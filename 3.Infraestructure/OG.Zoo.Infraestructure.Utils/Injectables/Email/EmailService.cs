@@ -96,7 +96,7 @@
         /// <param name="body">The body.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
-        public void Send(string destinatary, string subject, string body, object parameters, bool isHtml)
+        public void Send(string destinatary, string subject, string body, dynamic parameters, bool isHtml)
         {
             this.Send(new[] { destinatary }, subject, body, parameters, isHtml);
         }
@@ -109,7 +109,7 @@
         /// <param name="body">The body.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
-        public void Send(IEnumerable<string> destinataries, string subject, string body, object parameters, bool isHtml)
+        public void Send(IEnumerable<string> destinataries, string subject, string body, dynamic parameters, bool isHtml)
         {
             Email.DefaultRenderer = new RazorRenderer();
             Email.DefaultSender = new SmtpSender(this.client);
@@ -117,7 +117,7 @@
                 .To(destinataries.Select(destinatary => new Address(destinatary)).ToList())
                 .Subject(subject)
                 .UsingTemplate(body, parameters, isHtml)
-                .SendAsync();
+                .Send();
         }
     }
 }

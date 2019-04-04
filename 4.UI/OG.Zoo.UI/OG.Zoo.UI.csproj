@@ -5,6 +5,8 @@
     <AssemblyName>OG.Zoo.UI</AssemblyName>
     <RootNamespace>OG.Zoo.UI</RootNamespace>
     <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,6 +41,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\3.Infraestructure\OG.Zoo.Infraestructure.IoC\OG.Zoo.Infraestructure.IoC.csproj" />
     <ProjectReference Include="..\..\3.Infraestructure\OG.Zoo.Infraestructure.Utils\OG.Zoo.Infraestructure.Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Templates\EmailRecovery.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

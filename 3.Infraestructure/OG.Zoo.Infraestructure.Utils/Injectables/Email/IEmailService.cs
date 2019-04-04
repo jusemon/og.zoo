@@ -49,7 +49,7 @@
         /// <param name="body">The body.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
-        void Send(string destinatary, string subject, string body, object parameters, bool isHtml);
+        void Send(string destinatary, string subject, string body, dynamic parameters, bool isHtml);
 
         /// <summary>
         /// Sends the specified message to the destinataries.
@@ -59,6 +59,6 @@
         /// <param name="body">The body.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
-        void Send(IEnumerable<string> destinataries, string subject, string body, object parameters, bool isHtml);
+        void Send(IEnumerable<string> destinataries, string subject, string body, dynamic parameters, bool isHtml);
     }
 }

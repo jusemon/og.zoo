@@ -5,7 +5,9 @@
     using Domain.Entities.Security;
     using Generics;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
+    using System;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -41,6 +43,20 @@
         public Task<Response<User>> Login([FromBody] User user)
         {
             return this.userApplication.Login(user);
+        }
+
+        /// <summary>
+        /// Sends the recovery.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("SendRecovery")]
+        public Task<Response<bool>> SendRecovery(string email)
+        {
+
+            var url = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
+            return this.userApplication.SendRecovery(email, url);
         }
 
         /// <summary>

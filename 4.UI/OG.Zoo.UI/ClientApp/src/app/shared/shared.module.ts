@@ -10,10 +10,14 @@ import {
 } from '@angular/material';
 import { ConfirmComponent } from './dialogs/confirm/confirm.component';
 import { LoadingComponent } from './loading/loading.component';
+import { InputDialogComponent } from './dialogs/input-dialog/input-dialog.component';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DebugDirective } from './directives/debug.directive';
 
 
 @NgModule({
-  declarations: [ConfirmComponent, LoadingComponent],
+  declarations: [ConfirmComponent, LoadingComponent, InputDialogComponent, DebugDirective],
   exports: [
     LayoutModule,
     MatToolbarModule,
@@ -35,12 +39,18 @@ import { LoadingComponent } from './loading/loading.component';
     MatAutocompleteModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
-    ConfirmComponent
+    ConfirmComponent,
+    DebugDirective
   ],
   imports: [
+    CommonModule,
+    ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule
   ]
 })
 export class SharedModule { }

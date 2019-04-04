@@ -1,9 +1,10 @@
 ﻿namespace OG.Zoo.Application.Interfaces.Security
 {
-    using System.Threading.Tasks;
     using Domain.Entities.Security;
+    using DTOs;
     using Generics;
-    using OG.Zoo.Application.Interfaces.DTOs;
+    using System;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// User Application
@@ -17,5 +18,12 @@
         /// <param name="user">The user.</param>
         /// <returns></returns>
         Task<Response<User>> Login(User user);
+
+        /// <summary>
+        /// Sends the recovery.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <returns></returns>
+        Task<Response<bool>> SendRecovery(string email, string url);
     }
 }
