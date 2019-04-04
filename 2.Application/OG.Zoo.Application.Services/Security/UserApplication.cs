@@ -53,5 +53,15 @@
                 return true;
             });
         }
+
+        /// <summary>
+        /// Checks the recovery token.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        public Task<Response<User>> CheckRecoveryToken(User user)
+        {
+            return ApplicationUtil.Try(() => this.userService.CheckRecoveryToken(user));
+        }
     }
 }

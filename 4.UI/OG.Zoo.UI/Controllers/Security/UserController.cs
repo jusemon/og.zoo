@@ -60,12 +60,23 @@
         }
 
         /// <summary>
-        /// Logins the specified user.
+        /// Checks the recovery token.
         /// </summary>
-        /// <param name="user">The user.</param>
+        /// <param name="email">The email.</param>
         /// <returns></returns>
-        [HttpGet("CheckSession")]
-        public Response<bool> CheckSession()
+        [AllowAnonymous]
+        [HttpPost("CheckRecoveryToken")]
+        public Task<Response<User>> CheckRecoveryToken([FromBody] User user)
+        {
+            return this.userApplication.CheckRecoveryToken(user);
+        }
+
+        /// <summary>
+        /// Checks the token.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("CheckToken")]
+        public Response<bool> CheckToken()
         {
             return new Response<bool>
             {

@@ -1,20 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from './services/auth.service';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { MatSnackBar, MatDialog } from '@angular/material';
-import { Route, Router } from '@angular/router';
-import { Base64 } from '../shared/utils/base64';
-import { LoadingService } from '../shared/loading/loading.service';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { InputDialogComponent, InputDialogData, InputDialogResponse } from '../shared/dialogs/input-dialog/input-dialog.component';
+import { InputDialogData, InputDialogComponent, InputDialogResponse } from 'src/app/shared/dialogs/input-dialog/input-dialog.component';
+import { LoadingService } from 'src/app/shared/loading/loading.service';
+import { Base64 } from 'src/app/shared/utils/base64';
+import { AuthService } from './services/auth.service';
 
 @Component({
-  selector: 'app-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.scss']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
-export class AuthComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit, OnDestroy {
   authForm = this.fb.group({
     name: [null, Validators.required],
     password: [null, Validators.required]

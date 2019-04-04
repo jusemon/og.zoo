@@ -1,11 +1,11 @@
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { tap, map, catchError } from 'rxjs/operators';
+import { HttpClient, } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap, map } from 'rxjs/operators';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Injectable } from '@angular/core';
 import { UserLogin } from '../models/user';
-import { Response } from '../../shared/generics/response';
+import { Response } from '../../../shared/generics/response';
 
 @Injectable({
     providedIn: 'root'
@@ -46,6 +46,18 @@ export class AuthService {
     public checkToken(): Observable<boolean> {
         return this.http.get<Response<boolean>>(`${this.api}/user/checkToken`).pipe(
             map(res => res.result));
+    }
+
+    public checkRecoveryToken(user: UserLogin): Observable<UserLogin> {
+        return this.http.post<Response<UserLogin>>(`${this.api}/user/checkRecoveryToken`, user).pipe(
+            tap((response) => {
+                if (!response.isSuccess) {
+                    this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
+                    throw new Error(response.exceptionMessage);
+                }
+            }),
+            map(res => res.result)
+        );
     }
 
     /**

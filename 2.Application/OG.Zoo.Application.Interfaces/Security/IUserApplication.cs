@@ -25,5 +25,12 @@
         /// <param name="email">The email.</param>
         /// <returns></returns>
         Task<Response<bool>> SendRecovery(string email, string url);
+
+        /// <summary>
+        /// Checks the recovery token.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        Task<Response<User>> CheckRecoveryToken(User user);
     }
 }

@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/auth/login/services/auth.service';
 
 @Injectable()
 export class InterceptorService implements HttpInterceptor {
@@ -24,8 +24,8 @@ export class InterceptorService implements HttpInterceptor {
           this.authService.deauthenticate();
           this.router.navigate(['/auth']);
           this.snackBar.open('Auth denied.');
-          return throwError('Auth denied');
         }
+        return throwError(error);
       }));
   }
 }

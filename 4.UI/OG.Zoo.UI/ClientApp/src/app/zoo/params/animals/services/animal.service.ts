@@ -3,7 +3,7 @@ import { Animal } from '../models/animal';
 import { BaseService } from 'src/app/shared/generics/base-service';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material';
-import { AuthService } from 'src/app/auth/services/auth.service';
+import { AuthService } from 'src/app/auth/login/services/auth.service';
 
 @Injectable({
   providedIn: 'root'

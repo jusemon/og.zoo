@@ -3,11 +3,11 @@
     using Entities.Security;
     using Infraestructure.Utils.Exceptions;
     using Infraestructure.Utils.Injectables.Email;
+    using Infraestructure.Utils.Objects;
     using Infraestructure.Utils.Security;
     using Interfaces.Security.User;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.IdentityModel.Tokens;
-    using OG.Zoo.Infraestructure.Utils.Objects;
     using Services.Generics;
     using System;
     using System.Collections.Generic;
@@ -100,7 +100,7 @@
             {
                 user.Id = result.Id;
                 user.Password = string.Empty;
-                user.Token = this.GetToken(user, this.key);
+                user.Token = this.GetToken(user, this.key, DateTime.UtcNow.AddHours(7));
                 return;
             }
             throw new AppException(AppExceptionTypes.Validation, "Incorrect User or Password.");
@@ -115,13 +115,13 @@
         public async Task<User> GetUserWithRecoveryToken(string email)
         {
             var user = new User { Email = email };
-            var result = await this.userRepository.GetBy(user, u => u.Email?.ToUpperInvariant()?.Trim());
-            if (result == null)
+            user = await this.userRepository.GetBy(user, u => u.Email?.ToUpperInvariant()?.Trim());
+            if (user == null)
             {
                 return null;
             }
-            result.Token = this.GetToken(result, result.Password);
-            return result;
+            user.Token = this.GetToken(user, user.Password, DateTime.UtcNow.AddHours(12));
+            return user;
         }
 
         /// <summary>
@@ -132,9 +132,13 @@
         /// <returns></returns>
         public async Task SendRecoveryEmail(User user, string url)
         {
+            if (user == null)
+            {
+                return;
+            }
+
             var template = await File.ReadAllTextAsync("Templates/EmailRecovery.cshtml");
-            
-            var urlToken = QueryHelpers.AddQueryString($"{url}/{{0}}", new { token = user?.Token }.AsDictionary<string>());
+            var urlToken = QueryHelpers.AddQueryString($"{url}/{{0}}", new { token = user?.Token, id = user?.Id }.AsDictionary<string>());
             emailService.Send(user.Email, "Recovery Password", template, new { user.Name, UrlBase = url, UrlToken = urlToken }.ToDynamic(), true);
         }
 
@@ -165,7 +169,7 @@
         /// </summary>
         /// <param name="result">The result.</param>
         /// <returns></returns>
-        private string GetToken(User result, string secretKey)
+        private string GetToken(User result, string secretKey, DateTime expires)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(secretKey);
@@ -174,12 +178,69 @@
                 Subject = new ClaimsIdentity(new Claim[] {
                             new Claim(ClaimTypes.Name, result.Id)
                         }),
-                Expires = DateTime.UtcNow.AddHours(7),
+                Expires = expires,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var token = tokenHandler.WriteToken(securityToken);
             return token;
+        }
+
+        /// <summary>
+        /// Checks the recovery token.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        public async Task<User> CheckRecoveryToken(User user)
+        {
+            var currentUser = await this.userRepository.Get(user.Id);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(currentUser.Password);
+            this.CheckRecoveryToken(user, currentUser, tokenHandler, key);
+            currentUser.Password = string.Empty;
+            return currentUser;
+        }
+
+        /// <summary>
+        /// Checks the recovery token.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="currentUser">The current user.</param>
+        /// <param name="tokenHandler">The token handler.</param>
+        /// <param name="key">The key.</param>
+        /// <exception cref="AppException">
+        /// The recovery link has been expired
+        /// or
+        /// Invalid recovery link
+        /// </exception>
+        private void CheckRecoveryToken(User user, User currentUser, JwtSecurityTokenHandler tokenHandler, byte[] key)
+        {
+            try
+            {
+                tokenHandler.ValidateToken(user.Token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                }, out SecurityToken token);
+                if (token.Id != currentUser.Id)
+                {
+                    throw new AppException(AppExceptionTypes.Validation, "Invalid recovery link");
+                }
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (SecurityTokenExpiredException)
+            {
+                throw new AppException(AppExceptionTypes.Validation, "The recovery link has been expired");
+            }
+            catch (Exception)
+            {
+                throw new AppException(AppExceptionTypes.Validation, "Invalid recovery link");
+            }
         }
     }
 }
