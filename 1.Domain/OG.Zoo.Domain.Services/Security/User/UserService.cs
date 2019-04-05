@@ -194,9 +194,8 @@
         public async Task<User> CheckRecoveryToken(User user)
         {
             var currentUser = await this.userRepository.Get(user.Id);
-            var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(currentUser.Password);
-            this.CheckRecoveryToken(user, currentUser, tokenHandler, key);
+            this.CheckRecoveryToken(user, currentUser, key);
             currentUser.Password = string.Empty;
             return currentUser;
         }
@@ -213,18 +212,20 @@
         /// or
         /// Invalid recovery link
         /// </exception>
-        private void CheckRecoveryToken(User user, User currentUser, JwtSecurityTokenHandler tokenHandler, byte[] key)
+        private void CheckRecoveryToken(User user, User currentUser, byte[] key)
         {
             try
             {
-                tokenHandler.ValidateToken(user.Token, new TokenValidationParameters
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var principal = tokenHandler.ValidateToken(user.Token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false
-                }, out SecurityToken token);
-                if (token.Id != currentUser.Id)
+                }, out  SecurityToken token);
+                var claim = principal.Claims.First(c => c.Type == ClaimTypes.Name);
+                if (claim.Value != currentUser.Id)
                 {
                     throw new AppException(AppExceptionTypes.Validation, "Invalid recovery link");
                 }

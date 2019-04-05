@@ -14,10 +14,11 @@ import { InputDialogComponent } from './dialogs/input-dialog/input-dialog.compon
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DebugDirective } from './directives/debug.directive';
+import { FormComponent } from './components/form/form.component';
 
 
 @NgModule({
-  declarations: [ConfirmComponent, LoadingComponent, InputDialogComponent, DebugDirective],
+  declarations: [ConfirmComponent, LoadingComponent, InputDialogComponent, DebugDirective, FormComponent],
   exports: [
     LayoutModule,
     MatToolbarModule,
@@ -40,6 +41,7 @@ import { DebugDirective } from './directives/debug.directive';
     MatProgressBarModule,
     MatProgressSpinnerModule,
     ConfirmComponent,
+    FormComponent,
     DebugDirective
   ],
   imports: [
@@ -50,7 +52,8 @@ import { DebugDirective } from './directives/debug.directive';
     MatProgressSpinnerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatCardModule
   ]
 })
 export class SharedModule { }

@@ -7,7 +7,7 @@
     $accent: map-get($theme, accent);
 
     // Define any styles affected by the theme.
-    .auth-container {
+    .form-container {
         height: 100vh;
         display: inline-block;
         background-color: mat-color($primary);

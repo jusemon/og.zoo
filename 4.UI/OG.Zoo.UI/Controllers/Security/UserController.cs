@@ -71,6 +71,13 @@
             return this.userApplication.CheckRecoveryToken(user);
         }
 
+        [AllowAnonymous]
+        [HttpPost("UpdatePassword")]
+        public Task<Response<User>> UpdatePassword([FromBody] User user)
+        {
+            return this.userApplication.UpdatePassword(user);
+        }
+
         /// <summary>
         /// Checks the token.
         /// </summary>
