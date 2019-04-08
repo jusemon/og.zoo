@@ -5,8 +5,8 @@ import { Observable, throwError } from 'rxjs';
 import { Response } from './response';
 import { tap, map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { Paginated } from './paginated';
+import { AuthService } from 'src/app/auth/login/services/auth.service';
 
 /**
  * A base for the services

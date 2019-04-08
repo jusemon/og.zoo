@@ -14,6 +14,12 @@
         ServicesConfig GetServicesConfig();
 
         /// <summary>
+        /// Gets the email configuration.
+        /// </summary>
+        /// <returns></returns>
+        EmailConfig GetEmailConfig();
+
+        /// <summary>
         /// Gets the firebase configuration.
         /// </summary>
         /// <returns></returns>

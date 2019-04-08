@@ -16,5 +16,35 @@
         /// <param name="user">The user.</param>
         /// <returns></returns>
         Task Login(User user);
+
+        /// <summary>
+        /// Gets the user with recovery token.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <returns></returns>
+        Task<User> GetUserWithRecoveryToken(string email);
+
+        /// <summary>
+        /// Sends the recovery email.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="uri">The URL.</param>
+        /// <returns></returns>
+        Task SendRecoveryEmail(User user, string uri);
+
+        /// <summary>
+        /// Checks the recovery token.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <returns></returns>
+        Task<User> CheckRecoveryToken(User user);
+
+        /// <summary>
+        /// Sends the update password email.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="uri">The URI.</param>
+        /// <returns></returns>
+        Task SendUpdatePasswordEmail(User user, string uri);
     }
 }

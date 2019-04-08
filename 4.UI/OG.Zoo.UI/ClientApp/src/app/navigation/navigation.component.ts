@@ -5,9 +5,9 @@ import { map } from 'rxjs/operators';
 import { RoutesService } from '../shared/services/routes.service';
 import { Route } from '../shared/services/routes';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import { AuthService } from '../auth/services/auth.service';
 import { Router } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { AuthService } from '../auth/login/services/auth.service';
 
 @Component({
   selector: 'app-navigation',

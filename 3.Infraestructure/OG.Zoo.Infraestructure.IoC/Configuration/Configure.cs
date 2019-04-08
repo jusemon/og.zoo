@@ -8,6 +8,7 @@
     /// <summary>
     /// Configure
     /// </summary>
+    /// <seealso cref="OG.Zoo.Infraestructure.IoC.Configuration.IConfigure" />
     public class Configure: IConfigure
     {
         /// <summary>
@@ -19,7 +20,7 @@
         public IConfiguration configuration { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Configure"/> class.
+        /// Initializes a new instance of the <see cref="Configure" /> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         public Configure(IConfiguration configuration)
@@ -30,8 +31,6 @@
         /// <summary>
         /// Gets the firebase configuration.
         /// </summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <returns></returns>
         public void SetFirebaseConfig()
         {
             var section = this.configuration.GetSection(FirebaseConstants.FirebaseConfig);
@@ -39,9 +38,22 @@
             Environment.SetEnvironmentVariable(FirebaseConstants.GoogleProjectId, section["ProjectId"]);
         }
 
+        /// <summary>
+        /// Gets the services configuration.
+        /// </summary>
+        /// <returns></returns>
         public ServicesConfig GetServicesConfig()
         {
             return this.configuration.GetSection(nameof(ServicesConfig)).Get<ServicesConfig>();
+        }
+
+        /// <summary>
+        /// Gets the email configuration.
+        /// </summary>
+        /// <returns></returns>
+        public EmailConfig GetEmailConfig()
+        {
+            return this.configuration.GetSection(nameof(EmailConfig)).Get<EmailConfig>();
         }
     }
 }

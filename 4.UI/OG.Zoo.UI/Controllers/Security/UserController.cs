@@ -5,7 +5,9 @@
     using Domain.Entities.Security;
     using Generics;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
+    using System;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -44,12 +46,45 @@
         }
 
         /// <summary>
-        /// Logins the specified user.
+        /// Sends the recovery.
         /// </summary>
-        /// <param name="user">The user.</param>
+        /// <param name="email">The email.</param>
         /// <returns></returns>
-        [HttpGet("CheckSession")]
-        public Response<bool> CheckSession()
+        [AllowAnonymous]
+        [HttpGet("SendRecovery")]
+        public Task<Response<bool>> SendRecovery(string email)
+        {
+
+            var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
+            return this.userApplication.SendRecovery(email, uri);
+        }
+
+        /// <summary>
+        /// Checks the recovery token.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("CheckRecoveryToken")]
+        public Task<Response<User>> CheckRecoveryToken([FromBody] User user)
+        {
+            return this.userApplication.CheckRecoveryToken(user);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("UpdatePassword")]
+        public Task<Response<User>> UpdatePassword([FromBody] User user)
+        {
+            var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
+            return this.userApplication.UpdatePassword(user, uri);
+        }
+
+        /// <summary>
+        /// Checks the token.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("CheckToken")]
+        public Response<bool> CheckToken()
         {
             return new Response<bool>
             {

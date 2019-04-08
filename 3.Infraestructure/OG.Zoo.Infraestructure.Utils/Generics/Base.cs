@@ -14,7 +14,6 @@
         /// The identifier.
         /// </value>
         ///
-        [FirestoreProperty]
-        public string Id { get; set; }
+        public virtual string Id { get; set; }
     }
 }

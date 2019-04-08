@@ -4,10 +4,8 @@ import { BaseService } from 'src/app/shared/generics/base-service';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs';
-import { Response } from 'src/app/shared/generics/response';
-import { tap, map } from 'rxjs/operators';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { Paginated } from 'src/app/shared/generics/paginated';
+import { AuthService } from 'src/app/auth/login/services/auth.service';
 
 @Injectable({
   providedIn: 'root'

@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentEmail.Razor" Version="2.5.2" />
+    <PackageReference Include="FluentEmail.Smtp" Version="2.5.2" />
     <PackageReference Include="Google.Cloud.Firestore" Version="1.0.0-beta19" />
     <PackageReference Include="Isopoh.Cryptography.Argon2" Version="1.1.1" />
   </ItemGroup>
