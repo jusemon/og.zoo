@@ -8,6 +8,7 @@ import { Validators } from '@angular/forms';
 import { Base64 } from 'src/app/shared/utils/base64';
 import { MatSnackBar } from '@angular/material';
 import { CustomValidators } from 'src/app/shared/generics/custom-validators';
+import { LoadingService } from 'src/app/shared/loading/loading.service';
 
 @Component({
   selector: 'app-recovery',
@@ -50,6 +51,7 @@ export class RecoveryComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private loadingService: LoadingService,
     private authService: AuthService,
     private snackBar: MatSnackBar) { }
 
@@ -68,9 +70,11 @@ export class RecoveryComponent implements OnInit, OnDestroy {
 
   onSubmit(data: FormResponse) {
     if (data.newPassword) {
+      this.loadingService.show();
       this.user.password = Base64.encode(data.newPassword);
       this.authService.updatePassword(this.user).subscribe(() => {
         this.router.navigate(['/auth']);
+        this.loadingService.hide();
         this.snackBar.open('The password has been updated');
       });
     }
