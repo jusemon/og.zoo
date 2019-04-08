@@ -9,7 +9,7 @@
         <div class="col">
           <mat-form-field appearance="outline">
             <mat-label>{{control.label}}</mat-label>
-            <input [formControlName]="control.name" [type]="control.type || 'text'" matInput>
+            <input [formControlName]="control.name" [type]="control.type || 'text'" [autocomplete]="control.name" matInput>
             <mat-icon matSuffix *ngIf="control.icon" color="primary">{{control.icon}}</mat-icon>
             <mat-error *ngFor="let error of form.controls[control.name]?.errors | keyvalue">
               <span [innerHTML]="control.validators[error.key].message"></span>

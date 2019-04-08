@@ -71,13 +71,14 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        public Task<Response<User>> UpdatePassword(User user)
+        public Task<Response<User>> UpdatePassword(User user, string uri)
         {
             return ApplicationUtil.Try(async () => {
                 var currentUser = await this.userService.CheckRecoveryToken(user);
                 currentUser.Password = user.Password;
                 await this.userService.Update(currentUser);
                 currentUser.Password = string.Empty;
+                await this.userService.SendUpdatePasswordEmail(user, uri);
                 return currentUser;
             });
         }

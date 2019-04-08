@@ -44,6 +44,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Templates\PasswordChanged.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Templates\EmailRecovery.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

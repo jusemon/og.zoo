@@ -55,8 +55,8 @@
         public Task<Response<bool>> SendRecovery(string email)
         {
 
-            var url = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
-            return this.userApplication.SendRecovery(email, url);
+            var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
+            return this.userApplication.SendRecovery(email, uri);
         }
 
         /// <summary>
@@ -75,7 +75,8 @@
         [HttpPost("UpdatePassword")]
         public Task<Response<User>> UpdatePassword([FromBody] User user)
         {
-            return this.userApplication.UpdatePassword(user);
+            var uri = new Uri(this.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority);
+            return this.userApplication.UpdatePassword(user, uri);
         }
 
         /// <summary>

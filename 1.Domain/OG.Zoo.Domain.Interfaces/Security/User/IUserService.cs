@@ -28,9 +28,9 @@
         /// Sends the recovery email.
         /// </summary>
         /// <param name="user">The user.</param>
-        /// <param name="url">The URL.</param>
+        /// <param name="uri">The URL.</param>
         /// <returns></returns>
-        Task SendRecoveryEmail(User user, string url);
+        Task SendRecoveryEmail(User user, string uri);
 
         /// <summary>
         /// Checks the recovery token.
@@ -38,5 +38,13 @@
         /// <param name="user">The user.</param>
         /// <returns></returns>
         Task<User> CheckRecoveryToken(User user);
+
+        /// <summary>
+        /// Sends the update password email.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        /// <param name="uri">The URI.</param>
+        /// <returns></returns>
+        Task SendUpdatePasswordEmail(User user, string uri);
     }
 }

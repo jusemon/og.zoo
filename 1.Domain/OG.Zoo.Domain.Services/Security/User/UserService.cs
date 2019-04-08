@@ -130,7 +130,7 @@
         /// <param name="user">The user.</param>
         /// <param name="token">The token.</param>
         /// <returns></returns>
-        public async Task SendRecoveryEmail(User user, string url)
+        public async Task SendRecoveryEmail(User user, string uri)
         {
             if (user == null)
             {
@@ -138,8 +138,19 @@
             }
 
             var template = await File.ReadAllTextAsync("Templates/EmailRecovery.cshtml");
-            var urlToken = QueryHelpers.AddQueryString($"{url}/{{0}}", new { token = user?.Token, id = user?.Id }.AsDictionary<string>());
-            emailService.Send(user.Email, "Recovery Password", template, new { user.Name, UrlBase = url, UrlToken = urlToken }.ToDynamic(), true);
+            var urlToken = QueryHelpers.AddQueryString($"{uri}/{{0}}", new { token = user?.Token, id = user?.Id }.AsDictionary<string>());
+            emailService.Send(user.Email, "Recovery Password", template, new { user.Name, UrlBase = uri, UrlToken = urlToken }.ToDynamic(), true);
+        }
+
+        public async Task SendUpdatePasswordEmail(User user, string uri)
+        {
+            if (user == null)
+            {
+                return;
+            }
+
+            var template = await File.ReadAllTextAsync("Templates/PasswordChanged.cshtml");
+            emailService.Send(user.Email, "Your Zoo password has been changed", template, new { user.Name, UrlBase = uri }.ToDynamic(), true);
         }
 
         /// <summary>

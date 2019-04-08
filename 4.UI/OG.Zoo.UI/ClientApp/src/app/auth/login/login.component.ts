@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { MatSnackBar, MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { InputDialogData, InputDialogComponent, InputDialogResponse } from 'src/app/shared/dialogs/input-dialog/input-dialog.component';
 import { LoadingService } from 'src/app/shared/loading/loading.service';
@@ -46,10 +46,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private router: Router,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
     private loadingService: LoadingService) { }
 
   ngOnInit() {
+    this.route.queryParams.pipe(untilComponentDestroyed(this)).subscribe((data) => {
+      if (data.recovery) {
+        this.openRecoveryPassword();
+      }
+    });
   }
 
   onSubmit() {
