@@ -3,7 +3,6 @@ import { MatPaginator, MatSort } from '@angular/material';
 import { tap, finalize } from 'rxjs/operators';
 import { Observable, merge, BehaviorSubject, Subscription } from 'rxjs';
 import { Paginated } from './paginated';
-import { TitleCasePipe } from '@angular/common';
 
 /**
  * Data source for the UsersList view. This class should

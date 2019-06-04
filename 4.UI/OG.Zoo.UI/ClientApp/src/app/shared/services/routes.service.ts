@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Routes, Route } from './routes';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +12,6 @@ export class RoutesService {
     }
 
     get(): Observable<Route[]> {
-        return Observable.create((observer) => observer.next(this.routes));
+        return of(this.routes);
     }
 }
