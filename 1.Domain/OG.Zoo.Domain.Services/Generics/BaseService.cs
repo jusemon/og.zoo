@@ -85,7 +85,7 @@
         /// <param name="pageIndex">The page.</param>
         /// <param name="pageSize">The items per page.</param>
         /// <returns></returns>
-        public async Task<Paginated<TEntity>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
+        public virtual async Task<Paginated<TEntity>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
         {
             return await this.repository.GetAll(pageIndex, pageSize, sortBy, direction);
         }
