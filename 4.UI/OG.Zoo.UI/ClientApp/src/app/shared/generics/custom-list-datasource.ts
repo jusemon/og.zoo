@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator, MatSort } from '@angular/material';
 import { map } from 'rxjs/operators';
-import { Observable, of as observableOf, merge, Subject, observable } from 'rxjs';
+import { Observable, merge, Subject } from 'rxjs';
 
 /**
  * Data source for the UsersList view. This class should

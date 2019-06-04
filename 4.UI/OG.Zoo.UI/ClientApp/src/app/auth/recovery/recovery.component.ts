@@ -14,7 +14,7 @@ import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-recovery',
   templateUrl: './recovery.component.html',
-  styleUrls: ['./recovery.component.sass']
+  styleUrls: ['./recovery.component.scss']
 })
 export class RecoveryComponent implements OnInit, OnDestroy {
   user: UserLogin;

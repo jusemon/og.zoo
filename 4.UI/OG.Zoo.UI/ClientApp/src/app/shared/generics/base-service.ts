@@ -1,9 +1,9 @@
 import { BaseEntity } from './base-entity';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Response } from './response';
-import { tap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material';
 import { Paginated } from './paginated';
 import { AuthService } from 'src/app/auth/login/services/auth.service';
@@ -31,13 +31,26 @@ export class BaseService<TEntity extends BaseEntity> {
    * @param [params] Dynamic params
    * @returns Return the options of the request
    */
-  protected getOptions(params?: {[x: string]: any}) {
+  protected getOptions(params?: { [x: string]: any }) {
     return {
       headers: {
         Authorization: `Bearer ${this.authService.getToken()}`
       },
       params: params ? params : {}
     };
+  }
+
+  /**
+   * Handle response
+   */
+  protected handleResponse<TResult>() {
+    return map((response: Response<TResult>) => {
+      if (!response.isSuccess) {
+        this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
+        throw new Error(response.exceptionMessage);
+      }
+      return response.result;
+    });
   }
 
   /**
@@ -48,12 +61,8 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public getAll(urlController?: string): Observable<TEntity[]> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.get<Response<TEntity[]>>(`${this.api}/${controller}/`, this.getOptions()).pipe(tap((response) => {
-      if (!response.isSuccess) {
-        this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
-        throw new Error(response.exceptionMessage);
-      }
-    }), map(response => response.result));
+    return this.http.get<Response<TEntity[]>>(`${this.api}/${controller}/`, this.getOptions())
+      .pipe(this.handleResponse<TEntity[]>());
   }
 
   /**
@@ -62,14 +71,10 @@ export class BaseService<TEntity extends BaseEntity> {
    * @param [urlController] The url controller
    * @returns A observable with a array of entities
    */
-  public getPaginated(params: {[x: string]: any}, urlController?: string): Observable<Paginated<TEntity>> {
+  public getPaginated(params: { [x: string]: any }, urlController?: string): Observable<Paginated<TEntity>> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : `${this.urlController}/paginated`;
-    return this.http.get<Response<Paginated<TEntity>>>(`${this.api}/${controller}/`, this.getOptions(params)).pipe(tap((response) => {
-      if (!response.isSuccess) {
-        this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
-        throw new Error(response.exceptionMessage);
-      }
-    }), map(response => response.result));
+    return this.http.get<Response<Paginated<TEntity>>>(`${this.api}/${controller}/`, this.getOptions(params))
+      .pipe(this.handleResponse<Paginated<TEntity>>());
   }
 
   /**
@@ -81,12 +86,8 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public get(id: string, urlController?: string): Observable<TEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.get<Response<TEntity>>(`${this.api}/${controller}/${id}`, this.getOptions()).pipe(tap((response) => {
-      if (!response.isSuccess) {
-        this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
-        throw new Error(response.exceptionMessage);
-      }
-    }), map(response => response.result));
+    return this.http.get<Response<TEntity>>(`${this.api}/${controller}/${id}`, this.getOptions())
+      .pipe(this.handleResponse<TEntity>());
   }
 
   /**
@@ -98,12 +99,8 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public create(entity: TEntity, urlController?: string): Observable<TEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.post<Response<TEntity>>(`${this.api}/${controller}/`, entity, this.getOptions()).pipe(tap((response) => {
-      if (!response.isSuccess) {
-        this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
-        throw new Error(response.exceptionMessage);
-      }
-    }), map(response => response.result));
+    return this.http.post<Response<TEntity>>(`${this.api}/${controller}/`, entity, this.getOptions())
+      .pipe(this.handleResponse<TEntity>());
   }
 
   /**
@@ -115,13 +112,8 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public update(entity: TEntity, urlController?: string): Observable<TEntity | any> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.put<Response<TEntity>>(`${this.api}/${controller}/`, entity, this.getOptions()).pipe(map(response => {
-      if (!response.isSuccess) {
-        this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
-        throw new Error(response.exceptionMessage);
-      }
-      return response.result;
-    }));
+    return this.http.put<Response<TEntity>>(`${this.api}/${controller}/`, entity, this.getOptions())
+      .pipe(this.handleResponse<TEntity>());
   }
 
   /**
@@ -133,11 +125,7 @@ export class BaseService<TEntity extends BaseEntity> {
    */
   public delete(id: string, urlController?: string): Observable<TEntity> {
     const controller = typeof (urlController) !== 'undefined' ? urlController : this.urlController;
-    return this.http.delete<Response<TEntity>>(`${this.api}/${controller}/${id}`, this.getOptions()).pipe(tap((response) => {
-      if (!response.isSuccess) {
-        this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
-        throw new Error(response.exceptionMessage);
-      }
-    }), map(response => response.result));
+    return this.http.delete<Response<TEntity>>(`${this.api}/${controller}/${id}`, this.getOptions())
+      .pipe(this.handleResponse<TEntity>());
   }
 }

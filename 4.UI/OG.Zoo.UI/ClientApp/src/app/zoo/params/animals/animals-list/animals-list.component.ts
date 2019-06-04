@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator, MatSort, MatDialog, MatSnackBar } from '@angular/material';
 import { Animal } from '../models/animal';
-import { CustomListDataSource } from 'src/app/shared/generics/custom-list-datasource';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { AnimalService } from '../services/animal.service';
 import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';

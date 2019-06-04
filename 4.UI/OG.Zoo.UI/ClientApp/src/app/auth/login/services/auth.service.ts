@@ -2,7 +2,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { Injectable } from '@angular/core';
 import { UserLogin } from '../models/user';
 import { Response } from '../../../shared/generics/response';
@@ -19,6 +19,19 @@ export class AuthService {
     constructor(private http: HttpClient, private snackBar: MatSnackBar) {
         this.api = environment.apiZoo;
         this.key = environment.key;
+    }
+
+    /**
+     * Get the options of the request
+     *
+     * @returns Return the options of the request
+     */
+    protected getOptions() {
+        return {
+            headers: {
+                Authorization: `Bearer ${this.getToken()}`
+            }
+        };
     }
 
     /**
@@ -44,7 +57,7 @@ export class AuthService {
      * @returns A observable with true or false
      */
     public checkToken(): Observable<boolean> {
-        return this.http.get<Response<boolean>>(`${this.api}/user/checkToken`).pipe(
+        return this.http.get<Response<boolean>>(`${this.api}/user/checkToken`, this.getOptions()).pipe(
             map(res => res.result));
     }
 
@@ -73,8 +86,8 @@ export class AuthService {
                 this.snackBar.open(response.exceptionMessage, 'Dismiss', { duration: 3000 });
                 throw new Error(response.exceptionMessage);
             } else {
+                localStorage.setItem(this.key, JSON.stringify(response.result));
                 this.setAuthenticated(true);
-                return localStorage.setItem(this.key, JSON.stringify(response.result));
             }
         }), map(response => response.result));
     }

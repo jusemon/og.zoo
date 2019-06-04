@@ -43,7 +43,7 @@ export class InputDialogComponent implements OnInit {
       for (const key in field.validators) {
         if (field.validators.hasOwnProperty(key)) {
           const element = field.validators[key];
-          validators.push(element.validator)
+          validators.push(element.validator);
         }
       }
       form[field.name] = [value, validators];

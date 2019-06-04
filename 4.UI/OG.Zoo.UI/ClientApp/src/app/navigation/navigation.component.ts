@@ -15,15 +15,15 @@ import { AuthService } from '../auth/login/services/auth.service';
   styleUrls: ['./navigation.component.scss'],
   animations: [
     trigger('openClose', [
-      state('open', style({  transform: 'rotate(0)' })),
-      state('close', style({  transform: 'rotate(180deg)' })),
+      state('open', style({ transform: 'rotate(0)' })),
+      state('close', style({ transform: 'rotate(180deg)' })),
       transition('open => close', [animate('.2s')]),
       transition('close => open', [animate('.2s')])
     ])]
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   routes: Route[];
-  navigationVisible: boolean;
+  navigationVisible = false;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
@@ -34,18 +34,16 @@ export class NavigationComponent implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     private router: Router,
     private routesService: RoutesService,
-    public authService: AuthService) { }
+    private authService: AuthService) { }
 
   ngOnInit() {
     this.routesService.get().pipe(untilComponentDestroyed(this)).subscribe((routes) => {
       this.routes = routes;
     });
-    this.authService.checkToken().pipe(untilComponentDestroyed(this));
     this.authService.authenticated.pipe(untilComponentDestroyed(this)).subscribe((value) => {
+      this.navigationVisible = value;
       if (value) {
-        setTimeout(() => this.navigationVisible = value, 100);
-      } else {
-        this.navigationVisible = value;
+        this.authService.checkToken().pipe(untilComponentDestroyed(this)).subscribe();
       }
     });
   }
