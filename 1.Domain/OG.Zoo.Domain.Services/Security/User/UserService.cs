@@ -1,5 +1,6 @@
 ﻿namespace OG.Zoo.Domain.Services.Security.User
 {
+    using Entities.Generics;
     using Entities.Security;
     using Infraestructure.Utils.Exceptions;
     using Infraestructure.Utils.Injectables.Email;
@@ -173,6 +174,21 @@
         {
             var results = await base.GetAll();
             return results.Select(r => { r.Password = string.Empty; return r; });
+        }
+
+        /// <summary>
+        /// Gets all.
+        /// </summary>
+        /// <param name="pageIndex">The page.</param>
+        /// <param name="pageSize">The items per page.</param>
+        /// <param name="sortBy"></param>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        public override async Task<Paginated<User>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
+        {
+            var results = await this.userRepository.GetAll(pageIndex, pageSize, sortBy, direction);
+            results.Items = results.Items.Select(r => { r.Password = string.Empty; return r; });
+            return results;
         }
 
         /// <summary>
