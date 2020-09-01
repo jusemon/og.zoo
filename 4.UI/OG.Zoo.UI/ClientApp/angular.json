@@ -89,7 +89,10 @@
                 }
               ]
             }
-          }
+          },
+          "allowedCommonJsDependencies": [
+            "xlsx"
+          ]
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -168,5 +171,8 @@
       }
     }
   },
-  "defaultProject": "ClientApp"
+  "defaultProject": "ClientApp",
+  "cli": {
+    "analytics": "5e8e166a-092d-4af0-ae99-ca3a43789715"
+  }
 }

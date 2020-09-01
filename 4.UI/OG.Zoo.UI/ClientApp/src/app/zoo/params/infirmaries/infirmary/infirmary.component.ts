@@ -9,9 +9,9 @@ import { AnimalService } from '../../animals/services/animal.service';
 import { Animal } from '../../animals/models/animal';
 import { Observable } from 'rxjs';
 import { startWith, map, finalize } from 'rxjs/operators';
-import { isUndefined, isNullOrUndefined } from 'util';
 import { BaseEntity } from 'src/app/shared/generics/base-entity';
 import { LoadingService } from 'src/app/shared/loading/loading.service';
+import Utils from 'src/app/shared/utils';
 
 @Component({
   selector: 'app-infirmary',
@@ -104,7 +104,7 @@ export class InfirmaryComponent implements OnInit, OnDestroy {
 
   listValidator<T extends BaseEntity>(list: T[]): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
-      if (!isNullOrUndefined(control.value) && isUndefined(list.find(l => l.id === control.value.id))) {
+      if (!Utils.isNullOrUndefined(control.value) && Utils.isUndefined(list.find(l => l.id === control.value.id))) {
         return { invalidList: true };
       }
       return null;
