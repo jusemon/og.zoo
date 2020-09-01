@@ -25,7 +25,6 @@ import { LoadingComponent } from './shared/loading/loading.component';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true }
   ],
-  entryComponents: [LoadingComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

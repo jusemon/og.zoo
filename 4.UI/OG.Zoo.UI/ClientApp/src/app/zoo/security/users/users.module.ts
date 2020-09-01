@@ -6,7 +6,6 @@ import { UserComponent } from './user/user.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule, Route } from '@angular/router';
-import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';
 
 const routes: Route[] = [
   { path: '', component: UsersComponent },
@@ -21,7 +20,6 @@ const routes: Route[] = [
     SharedModule,
     RouterModule.forChild(routes),
     ReactiveFormsModule
-  ],
-  entryComponents: [ConfirmComponent]
+  ]
 })
 export class UsersModule { }

@@ -6,7 +6,6 @@ import { InfirmaryComponent } from './infirmary/infirmary.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RouterModule, Route } from '@angular/router';
-import { ConfirmComponent } from 'src/app/shared/dialogs/confirm/confirm.component';
 
 const routes: Route[] = [
   { path: '', component: InfirmariesComponent },
@@ -22,7 +21,6 @@ const routes: Route[] = [
     RouterModule.forChild(routes),
     ReactiveFormsModule
   ],
-  entryComponents: [ConfirmComponent],
   providers: [DatePipe]
 })
 export class InfirmariesModule { }

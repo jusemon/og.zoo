@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { Route, RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { InputDialogComponent } from '../shared/dialogs/input-dialog/input-dialog.component';
 import { LoginComponent } from './login/login.component';
 import { RecoveryComponent } from './recovery/recovery.component';
 import { RecoveryGuardService } from './recovery/services/recovery-guard.service';
@@ -22,7 +21,6 @@ const routes: Route[] = [
     SharedModule,
     ReactiveFormsModule
   ],
-  providers: [RecoveryGuardService],
-  entryComponents: [InputDialogComponent]
+  providers: [RecoveryGuardService]
 })
 export class AuthModule { }
