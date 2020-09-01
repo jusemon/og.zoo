@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatPaginator, MatSort, MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
 import { Animal } from '../models/animal';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { AnimalService } from '../services/animal.service';
@@ -13,8 +16,8 @@ import { ServerSideListDataSource } from 'src/app/shared/generics/server-side-li
   styleUrls: ['./animals-list.component.scss']
 })
 export class AnimalsListComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
   dataSource: ServerSideListDataSource<Animal>;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */

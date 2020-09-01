@@ -2,7 +2,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Injectable } from '@angular/core';
 import { UserLogin } from '../models/user';
 import { Response } from '../../../shared/generics/response';

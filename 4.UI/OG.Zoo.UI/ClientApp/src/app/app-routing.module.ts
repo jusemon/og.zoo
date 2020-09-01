@@ -4,10 +4,10 @@ import { AuthGuardService } from './auth/login/services/auth-guard.service';
 
 const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
-  { path: 'auth', loadChildren: './auth/auth.module#AuthModule', canActivate: [AuthGuardService] },
-  { path: 'home', loadChildren: './home/home.module#HomeModule', canActivate: [AuthGuardService] },
-  { path: 'security', loadChildren: './zoo/security/security.module#SecurityModule', canActivate: [AuthGuardService] },
-  { path: 'params', loadChildren: './zoo/params/params.module#ParamsModule', canActivate: [AuthGuardService] }
+  { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule), canActivate: [AuthGuardService] },
+  { path: 'home', loadChildren: () => import('./home/home.module').then(m => m.HomeModule), canActivate: [AuthGuardService] },
+  { path: 'security', loadChildren: () => import('./zoo/security/security.module').then(m => m.SecurityModule), canActivate: [AuthGuardService] },
+  { path: 'params', loadChildren: () => import('./zoo/params/params.module').then(m => m.ParamsModule), canActivate: [AuthGuardService] }
 ];
 
 @NgModule({

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Infirmary } from '../models/infirmary';
 import { BaseService } from 'src/app/shared/generics/base-service';
 import { HttpClient } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { Paginated } from 'src/app/shared/generics/paginated';
 import { AuthService } from 'src/app/auth/login/services/auth.service';

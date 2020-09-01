@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Route, RouterModule } from '@angular/router';
 
 const routes: Route[] = [
-  { path: 'animals', loadChildren: './animals/animals.module#AnimalsModule' },
-  { path: 'infirmaries', loadChildren: './infirmaries/infirmaries.module#InfirmariesModule' },
+  { path: 'animals', loadChildren: () => import('./animals/animals.module').then(m => m.AnimalsModule) },
+  { path: 'infirmaries', loadChildren: () => import('./infirmaries/infirmaries.module').then(m => m.InfirmariesModule) },
 ];
 
 @NgModule({

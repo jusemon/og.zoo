@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatPaginator, MatSort, MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
 import { Infirmary } from '../models/infirmary';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { InfirmaryService } from '../services/infirmary.service';
@@ -13,8 +16,8 @@ import { ServerSideListDataSource } from 'src/app/shared/generics/server-side-li
   styleUrls: ['./infirmaries-list.component.scss']
 })
 export class InfirmariesListComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
   dataSource: ServerSideListDataSource<Infirmary>;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */

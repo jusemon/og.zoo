@@ -1,13 +1,23 @@
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NgModule } from '@angular/core';
 import { LayoutModule } from '@angular/cdk/layout';
-import {
-  MatButtonModule, MatSidenavModule, MatIconModule, MatListModule,
-  MatTableModule, MatPaginatorModule, MatSortModule, MatInputModule,
-  MatSelectModule, MatRadioModule, MatCardModule, MatSnackBarModule,
-  MatDialogModule, MatFormFieldModule, MatAutocompleteModule,
-  MatProgressBarModule, MatProgressSpinnerModule
-} from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { ConfirmComponent } from './dialogs/confirm/confirm.component';
 import { LoadingComponent } from './loading/loading.component';
 import { InputDialogComponent } from './dialogs/input-dialog/input-dialog.component';

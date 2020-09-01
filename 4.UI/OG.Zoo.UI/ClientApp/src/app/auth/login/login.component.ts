@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { InputDialogData, InputDialogComponent, InputDialogResponse } from 'src/app/shared/dialogs/input-dialog/input-dialog.component';

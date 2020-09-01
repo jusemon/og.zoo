@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { AnimalService } from '../services/animal.service';
 import { Animal } from '../models/animal';

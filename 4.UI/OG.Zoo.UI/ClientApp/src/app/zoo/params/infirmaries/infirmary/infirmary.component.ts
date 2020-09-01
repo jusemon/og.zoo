@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { InfirmaryService } from '../services/infirmary.service';
 import { Infirmary } from '../models/infirmary';

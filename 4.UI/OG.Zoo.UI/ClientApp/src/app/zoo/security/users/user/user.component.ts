@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { Base64 } from 'src/app/shared/utils/base64';
 import { User } from '../models/user';

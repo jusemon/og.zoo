@@ -6,7 +6,7 @@ import { UserLogin } from '../login/models/user';
 import { FormResponse, FormConfig } from 'src/app/shared/components/form/form.component';
 import { Validators } from '@angular/forms';
 import { Base64 } from 'src/app/shared/utils/base64';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CustomValidators } from 'src/app/shared/generics/custom-validators';
 import { LoadingService } from 'src/app/shared/loading/loading.service';
 import { finalize } from 'rxjs/operators';
