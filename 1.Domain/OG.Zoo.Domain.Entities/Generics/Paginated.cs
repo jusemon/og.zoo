@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace OG.Zoo.Domain.Entities.Generics
 {
     /// <summary>
-    /// 
+    /// Paginated generic
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     public class Paginated<TEntity>

@@ -71,6 +71,5 @@
         /// </value>
         [FirestoreProperty]
         public string Type { get; set; }
-
     }
 }

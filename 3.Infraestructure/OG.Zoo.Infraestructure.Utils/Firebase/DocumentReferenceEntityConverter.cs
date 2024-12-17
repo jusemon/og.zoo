@@ -1,14 +1,15 @@
 ﻿namespace OG.Zoo.Infraestructure.Utils.Firebase
 {
+    using System;
     using Generics;
     using Google.Cloud.Firestore;
-    using System;
 
     /// <summary>
     /// Document Reference Converter
     /// </summary>
     /// <seealso cref="Google.Cloud.Firestore.IFirestoreConverter{System.String}" />
-    public class DocumentReferenceEntityConverter<T> : IFirestoreConverter<T> where T : Base
+    public class DocumentReferenceEntityConverter<T> : IFirestoreConverter<T>
+        where T : Base
     {
         /// <summary>
         /// Converts a value from its Firestore representation.

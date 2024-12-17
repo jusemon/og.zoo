@@ -1,9 +1,9 @@
 ﻿namespace OG.Zoo.Application.Interfaces.Generics
 {
-    using Domain.Entities.Generics;
-    using DTOs;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Domain.Entities.Generics;
+    using DTOs;
 
     /// <summary>
     /// Base Application
@@ -54,6 +54,11 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="direction">The direction.</param>
         /// <returns></returns>
-        Task<Response<Paginated<TEntity>>> GetAll(int pageIndex, int pageSize, string sortBy, string direction);
+        Task<Response<Paginated<TEntity>>> GetAll(
+            int pageIndex,
+            int pageSize,
+            string sortBy,
+            string direction
+        );
     }
 }

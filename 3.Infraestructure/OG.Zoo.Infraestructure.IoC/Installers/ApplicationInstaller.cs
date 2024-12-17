@@ -1,10 +1,10 @@
 ﻿namespace OG.Zoo.Infraestructure.IoC.Installers
 {
+    using System.Linq;
     using Application.Interfaces.Generics;
     using Application.Services.Generics;
     using Configuration;
-    using LightInject;
-    using System.Linq;
+    using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>
     /// Application Installer
@@ -29,10 +29,31 @@
         /// Installs the specified service registry.
         /// </summary>
         /// <param name="serviceRegistry">The service registry.</param>
-        public void Install(IServiceRegistry serviceRegistry)
+        public void Install(IServiceCollection serviceRegistry)
         {
-            serviceRegistry.RegisterAssembly(typeof(BaseApplication<,>).Assembly,
-                (s, _) => s.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IBaseApplication<,>)));
+            var types = typeof(BaseApplication<,>).Assembly.GetTypes();
+
+            var interfaces = typeof(IBaseApplication<,>)
+                .Assembly.GetTypes()
+                .Where(t =>
+                    t.IsInterface
+                    && t.GetInterfaces()
+                        .Any(i =>
+                            i.IsGenericType
+                            && i.GetGenericTypeDefinition() == typeof(IBaseApplication<,>)
+                        )
+                );
+
+            foreach (var interfaceType in interfaces)
+            {
+                var implementationType = types.FirstOrDefault(t =>
+                    t.IsClass && t.GetInterfaces().Any(i => i == interfaceType)
+                );
+                if (implementationType != null)
+                {
+                    serviceRegistry.AddScoped(interfaceType, implementationType);
+                }
+            }
         }
     }
 }

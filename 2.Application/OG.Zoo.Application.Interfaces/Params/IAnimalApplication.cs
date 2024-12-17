@@ -7,7 +7,5 @@
     /// Animal Application
     /// </summary>
     /// <seealso cref="OG.Zoo.Application.Interfaces.Generics.IBaseApplication{OG.Zoo.Domain.Entities.Params.Animal, System.String}" />
-    public interface IAnimalApplication: IBaseApplication<Animal, string>
-    {
-    }
+    public interface IAnimalApplication : IBaseApplication<Animal, string> { }
 }

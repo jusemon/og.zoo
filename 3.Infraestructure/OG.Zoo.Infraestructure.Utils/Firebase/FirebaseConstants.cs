@@ -10,7 +10,8 @@
         /// <summary>
         /// The google application credentials
         /// </summary>
-        public static readonly string GoogleApplicationCredentials = "GOOGLE_APPLICATION_CREDENTIALS";
+        public static readonly string GoogleApplicationCredentials =
+            "GOOGLE_APPLICATION_CREDENTIALS";
 
         /// <summary>
         /// The firebase configuration

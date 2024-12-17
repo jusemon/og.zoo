@@ -1,8 +1,8 @@
 ﻿namespace OG.Zoo.Domain.Interfaces.Security.User
 {
-    using Generics;
-    using Entities.Security;
     using System.Threading.Tasks;
+    using Entities.Security;
+    using Generics;
 
     /// <summary>
     /// User Service

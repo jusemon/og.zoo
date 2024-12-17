@@ -1,7 +1,7 @@
 ﻿namespace OG.Zoo.Infraestructure.Utils.Firebase
 {
-    using Google.Cloud.Firestore;
     using System;
+    using Google.Cloud.Firestore;
 
     /// <summary>
     /// Document Reference Converter

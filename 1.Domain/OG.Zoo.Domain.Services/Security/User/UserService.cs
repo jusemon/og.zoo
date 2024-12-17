@@ -1,5 +1,13 @@
 ﻿namespace OG.Zoo.Domain.Services.Security.User
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Text;
+    using System.Threading.Tasks;
     using Entities.Generics;
     using Entities.Security;
     using Infraestructure.Utils.Exceptions;
@@ -10,14 +18,6 @@
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.IdentityModel.Tokens;
     using Services.Generics;
-    using System;
-    using System.Collections.Generic;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.IO;
-    using System.Linq;
-    using System.Security.Claims;
-    using System.Text;
-    using System.Threading.Tasks;
     using Validators;
 
     /// <summary>
@@ -48,7 +48,8 @@
         /// <param name="repository">The repository.</param>
         /// <param name="emailService">The email service.</param>
         /// <param name="key">The key.</param>
-        public UserService(IUserRepository repository, IEmailService emailService, string key) : base(repository)
+        public UserService(IUserRepository repository, IEmailService emailService, string key)
+            : base(repository)
         {
             this.userRepository = repository;
             this.emailService = emailService;
@@ -63,7 +64,9 @@
         /// <returns></returns>
         public override async Task Create(User entity)
         {
-            entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password)));
+            entity.Password = Cryptography.GetHash(
+                Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password))
+            );
             await base.Create(entity);
             entity.Password = string.Empty;
         }
@@ -77,7 +80,9 @@
         {
             if (!string.IsNullOrWhiteSpace(entity.Password))
             {
-                entity.Password = Cryptography.GetHash(Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password)));
+                entity.Password = Cryptography.GetHash(
+                    Encoding.UTF8.GetString(Convert.FromBase64String(entity.Password))
+                );
             }
             else
             {
@@ -96,8 +101,17 @@
         /// <exception cref="AppException">Incorrect User or Password.</exception>
         public async Task Login(User user)
         {
-            var result = await this.userRepository.GetBy(user, u => u.Name.ToUpperInvariant().Trim());
-            if (result != null && Cryptography.Validate(result.Password, Encoding.UTF8.GetString(Convert.FromBase64String(user.Password))))
+            var result = await this.userRepository.GetBy(
+                user,
+                u => u.Name.ToUpperInvariant().Trim()
+            );
+            if (
+                result != null
+                && Cryptography.Validate(
+                    result.Password,
+                    Encoding.UTF8.GetString(Convert.FromBase64String(user.Password))
+                )
+            )
             {
                 user.Id = result.Id;
                 user.Password = string.Empty;
@@ -139,8 +153,22 @@
             }
 
             var template = await File.ReadAllTextAsync("Templates/EmailRecovery.cshtml");
-            var urlToken = QueryHelpers.AddQueryString($"{uri}/{{0}}", new { token = user?.Token, id = user?.Id }.AsDictionary<string>());
-            emailService.Send(user.Email, "Recovery Password", template, new { user.Name, UrlBase = uri, UrlToken = urlToken }.ToDynamic(), true);
+            var urlToken = QueryHelpers.AddQueryString(
+                $"{uri}/{{0}}",
+                new { token = user?.Token, id = user?.Id }.AsDictionary<string>()
+            );
+            emailService.Send(
+                user.Email,
+                "Recovery Password",
+                template,
+                new
+                {
+                    user.Name,
+                    UrlBase = uri,
+                    UrlToken = urlToken
+                }.ToDynamic(),
+                true
+            );
         }
 
         public async Task SendUpdatePasswordEmail(User user, string uri)
@@ -151,7 +179,13 @@
             }
 
             var template = await File.ReadAllTextAsync("Templates/PasswordChanged.cshtml");
-            emailService.Send(user.Email, "Your Zoo password has been changed", template, new { user.Name, UrlBase = uri }.ToDynamic(), true);
+            emailService.Send(
+                user.Email,
+                "Your Zoo password has been changed",
+                template,
+                new { user.Name, UrlBase = uri }.ToDynamic(),
+                true
+            );
         }
 
         /// <summary>
@@ -173,7 +207,11 @@
         public override async Task<IEnumerable<User>> GetAll()
         {
             var results = await base.GetAll();
-            return results.Select(r => { r.Password = string.Empty; return r; });
+            return results.Select(r =>
+            {
+                r.Password = string.Empty;
+                return r;
+            });
         }
 
         /// <summary>
@@ -184,10 +222,19 @@
         /// <param name="sortBy"></param>
         /// <param name="direction"></param>
         /// <returns></returns>
-        public override async Task<Paginated<User>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
+        public override async Task<Paginated<User>> GetAll(
+            int pageIndex,
+            int pageSize,
+            string sortBy,
+            string direction
+        )
         {
             var results = await this.userRepository.GetAll(pageIndex, pageSize, sortBy, direction);
-            results.Items = results.Items.Select(r => { r.Password = string.Empty; return r; });
+            results.Items = results.Items.Select(r =>
+            {
+                r.Password = string.Empty;
+                return r;
+            });
             return results;
         }
 
@@ -202,11 +249,12 @@
             var key = Encoding.UTF8.GetBytes(secretKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[] {
-                            new Claim(ClaimTypes.Name, result.Id)
-                        }),
+                Subject = new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, result.Id) }),
                 Expires = expires,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature
+                )
             };
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var token = tokenHandler.WriteToken(securityToken);
@@ -222,7 +270,7 @@
         {
             var currentUser = await this.userRepository.Get(user.Id);
             var key = Encoding.UTF8.GetBytes(currentUser.Password);
-            this.CheckRecoveryToken(user, currentUser, key);
+            CheckRecoveryToken(user, currentUser, key);
             currentUser.Password = string.Empty;
             return currentUser;
         }
@@ -239,18 +287,22 @@
         /// or
         /// Invalid recovery link
         /// </exception>
-        private void CheckRecoveryToken(User user, User currentUser, byte[] key)
+        private static void CheckRecoveryToken(User user, User currentUser, byte[] key)
         {
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var principal = tokenHandler.ValidateToken(user.Token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                }, out  SecurityToken token);
+                var principal = tokenHandler.ValidateToken(
+                    user.Token,
+                    new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    },
+                    out SecurityToken token
+                );
                 var claim = principal.Claims.First(c => c.Type == ClaimTypes.Name);
                 if (claim.Value != currentUser.Id)
                 {
@@ -263,7 +315,10 @@
             }
             catch (SecurityTokenExpiredException)
             {
-                throw new AppException(AppExceptionTypes.Validation, "The recovery link has been expired");
+                throw new AppException(
+                    AppExceptionTypes.Validation,
+                    "The recovery link has been expired"
+                );
             }
             catch (Exception)
             {
