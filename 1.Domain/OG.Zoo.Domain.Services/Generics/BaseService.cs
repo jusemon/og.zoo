@@ -1,13 +1,13 @@
 ﻿namespace OG.Zoo.Domain.Services.Generics
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Entities.Generics;
     using FluentValidation;
     using Infraestructure.Utils.Exceptions;
     using Infraestructure.Utils.Generics;
     using Interfaces.Generics;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Base Service
@@ -15,7 +15,8 @@
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TId">The type of the identifier.</typeparam>
     /// <seealso cref="OG.Zoo.Domain.Interfaces.Generics.IBaseService{TEntity, TId}" />
-    public class BaseService<TEntity, TId> : IBaseService<TEntity, TId> where TEntity : Base
+    public class BaseService<TEntity, TId> : IBaseService<TEntity, TId>
+        where TEntity : Base
     {
         /// <summary>
         /// The repository
@@ -65,7 +66,7 @@
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        public virtual  async Task<TEntity> Get(TId id)
+        public virtual async Task<TEntity> Get(TId id)
         {
             return await this.repository.Get(id);
         }
@@ -85,7 +86,12 @@
         /// <param name="pageIndex">The page.</param>
         /// <param name="pageSize">The items per page.</param>
         /// <returns></returns>
-        public virtual async Task<Paginated<TEntity>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
+        public virtual async Task<Paginated<TEntity>> GetAll(
+            int pageIndex,
+            int pageSize,
+            string sortBy,
+            string direction
+        )
         {
             return await this.repository.GetAll(pageIndex, pageSize, sortBy, direction);
         }
@@ -114,7 +120,10 @@
                 var result = this.Validator.Validate(entity);
                 if (!result.IsValid)
                 {
-                    throw new AppException(AppExceptionTypes.Validation, result.Errors.FirstOrDefault()?.ErrorMessage);
+                    throw new AppException(
+                        AppExceptionTypes.Validation,
+                        result.Errors.FirstOrDefault()?.ErrorMessage
+                    );
                 }
             }
         }

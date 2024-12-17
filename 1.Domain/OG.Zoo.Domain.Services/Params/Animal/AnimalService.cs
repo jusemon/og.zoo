@@ -15,8 +15,7 @@
         /// Initializes a new instance of the <see cref="AnimalService"/> class.
         /// </summary>
         /// <param name="repository">The repository.</param>
-        public AnimalService(IAnimalRepository repository) : base(repository)
-        {
-        }
+        public AnimalService(IAnimalRepository repository)
+            : base(repository) { }
     }
 }

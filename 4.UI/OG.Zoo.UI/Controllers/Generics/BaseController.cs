@@ -1,11 +1,11 @@
 ﻿namespace OG.Zoo.UI.Controllers.Generics
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Application.Interfaces.DTOs;
     using Application.Interfaces.Generics;
     using Domain.Entities.Generics;
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Base Controller
@@ -35,7 +35,8 @@
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
         [HttpPost]
-        public virtual Task<Response<TEntity>> Create([FromBody] TEntity entity) {
+        public virtual Task<Response<TEntity>> Create([FromBody] TEntity entity)
+        {
             return this.application.Create(entity);
         }
 
@@ -45,9 +46,9 @@
         /// <param name="entity">The entity.</param>
         /// <returns></returns>
         [HttpPut]
-        public virtual Task<Response<TEntity>> Update([FromBody] TEntity entity) {
+        public virtual Task<Response<TEntity>> Update([FromBody] TEntity entity)
+        {
             return this.application.Update(entity);
-
         }
 
         /// <summary>
@@ -56,9 +57,9 @@
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public virtual Task<Response<TEntity>> Delete(TId id) {
+        public virtual Task<Response<TEntity>> Delete(TId id)
+        {
             return this.application.Delete(id);
-
         }
 
         /// <summary>
@@ -67,9 +68,9 @@
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public virtual Task<Response<TEntity>> Get(TId id) {
+        public virtual Task<Response<TEntity>> Get(TId id)
+        {
             return this.application.Get(id);
-
         }
 
         /// <summary>
@@ -77,7 +78,8 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public virtual Task<Response<IEnumerable<TEntity>>> GetAll() {
+        public virtual Task<Response<IEnumerable<TEntity>>> GetAll()
+        {
             return this.application.GetAll();
         }
 
@@ -90,7 +92,12 @@
         /// <param name="direction">The direction.</param>
         /// <returns></returns>
         [HttpGet("Paginated")]
-        public virtual Task<Response<Paginated<TEntity>>> GetAll(int pageIndex, int pageSize, string sortBy, string direction)
+        public virtual Task<Response<Paginated<TEntity>>> GetAll(
+            int pageIndex,
+            int pageSize,
+            string sortBy,
+            string direction
+        )
         {
             return this.application.GetAll(pageIndex, pageSize, sortBy, direction);
         }

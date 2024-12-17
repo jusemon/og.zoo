@@ -1,15 +1,15 @@
 ﻿namespace OG.Zoo.Infraestructure.IoC.Configuration
 {
+    using System;
     using Microsoft.Extensions.Configuration;
     using OG.Zoo.Infraestructure.IoC.Configuration.Configs;
     using OG.Zoo.Infraestructure.Utils.Firebase;
-    using System;
 
     /// <summary>
     /// Configure
     /// </summary>
     /// <seealso cref="OG.Zoo.Infraestructure.IoC.Configuration.IConfigure" />
-    public class Configure: IConfigure
+    public class Configure : IConfigure
     {
         /// <summary>
         /// Gets the configuration.
@@ -34,8 +34,14 @@
         public void SetFirebaseConfig()
         {
             var section = this.configuration.GetSection(FirebaseConstants.FirebaseConfig);
-            Environment.SetEnvironmentVariable(FirebaseConstants.GoogleApplicationCredentials, section["Credentials"]);
-            Environment.SetEnvironmentVariable(FirebaseConstants.GoogleProjectId, section["ProjectId"]);
+            Environment.SetEnvironmentVariable(
+                FirebaseConstants.GoogleApplicationCredentials,
+                section["Credentials"]
+            );
+            Environment.SetEnvironmentVariable(
+                FirebaseConstants.GoogleProjectId,
+                section["ProjectId"]
+            );
         }
 
         /// <summary>

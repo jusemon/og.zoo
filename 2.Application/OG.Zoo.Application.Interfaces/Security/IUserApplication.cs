@@ -1,10 +1,9 @@
 ﻿namespace OG.Zoo.Application.Interfaces.Security
 {
+    using System.Threading.Tasks;
     using Domain.Entities.Security;
     using DTOs;
     using Generics;
-    using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// User Application

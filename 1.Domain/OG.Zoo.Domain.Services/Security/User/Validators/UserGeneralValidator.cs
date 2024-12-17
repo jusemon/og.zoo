@@ -1,10 +1,10 @@
 ﻿namespace OG.Zoo.Domain.Services.Security.User.Validators
 {
+    using System.Threading;
+    using System.Threading.Tasks;
     using Entities.Security;
     using FluentValidation;
     using Interfaces.Security.User;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// User general validations
@@ -24,7 +24,9 @@
         public UserGeneralValidator(IUserRepository userRepository)
         {
             this.userRepository = userRepository;
-            this.RuleFor(u => u).MustAsync(this.NotExist).WithMessage(u => $"A user with the same name already exists.");
+            this.RuleFor(u => u)
+                .MustAsync(this.NotExist)
+                .WithMessage(u => $"A user with the same name already exists.");
         }
 
         /// <summary>
@@ -35,8 +37,12 @@
         /// <returns></returns>
         private async Task<bool> NotExist(User user, CancellationToken cancellationToken)
         {
-            var result = await this.userRepository.GetBy(user, u => u.Name.Trim().ToUpperInvariant());
-            if (result != null) {
+            var result = await this.userRepository.GetBy(
+                user,
+                u => u.Name.Trim().ToUpperInvariant()
+            );
+            if (result != null)
+            {
                 return result.Id == user.Id;
             }
             return result == null;

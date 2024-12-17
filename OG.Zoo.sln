@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Infraestructure", "3.Infr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.UI", "4.UI", "{98735E2F-E34B-464E-8122-1579F3D4F2D9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OG.Zoo.Domain.Entities", "1.Domain\OG.Zoo.Domain.Model\OG.Zoo.Domain.Entities.csproj", "{713377FB-E1FA-41F9-9B32-127CFAAE56F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OG.Zoo.Domain.Entities", "1.Domain\OG.Zoo.Domain.Entities\OG.Zoo.Domain.Entities.csproj", "{713377FB-E1FA-41F9-9B32-127CFAAE56F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OG.Zoo.Domain.Interfaces", "1.Domain\OG.Zoo.Domain.Interfaces\OG.Zoo.Domain.Interfaces.csproj", "{6FABF39F-1AB4-434B-B77D-A282354935DB}"
 EndProject
