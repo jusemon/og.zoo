@@ -1,5 +1,6 @@
 ﻿namespace OG.Zoo.UI
 {
+    using System.Text;
     using Infraestructure.IoC;
     using Infraestructure.IoC.Configuration.Configs;
     using LightInject;
@@ -11,7 +12,6 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
-    using System.Text;
 
     public class Startup
     {
@@ -25,30 +25,33 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var servicesConfig = this.Configuration.GetSection(nameof(ServicesConfig)).Get<ServicesConfig>();
+            var servicesConfig = this
+                .Configuration.GetSection(nameof(ServicesConfig))
+                .Get<ServicesConfig>();
             var key = Encoding.UTF8.GetBytes(servicesConfig.Key);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist/ClientApp";
             });
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+            services
+                .AddAuthentication(x =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
         }
 
         // This method overwrite the container to LighInject
@@ -89,7 +92,6 @@
 
                     // use this if you want to start manually the angular server
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
-
                 }
             });
         }

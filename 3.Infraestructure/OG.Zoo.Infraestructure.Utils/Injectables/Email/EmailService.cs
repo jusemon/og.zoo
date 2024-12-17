@@ -1,21 +1,20 @@
 ﻿namespace OG.Zoo.Infraestructure.Utils.Injectables.Email
 {
-    using FluentEmail.Core;
-    using FluentEmail.Core.Models;
-    using FluentEmail.Razor;
-    using FluentEmail.Smtp;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Net.Mail;
+    using FluentEmail.Core;
+    using FluentEmail.Core.Models;
+    using FluentEmail.Razor;
+    using FluentEmail.Smtp;
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <seealso cref="OG.Zoo.Infraestructure.Utils.Injectables.Email.IEmailService" />
-    public class EmailService: IEmailService
+    public class EmailService : IEmailService
     {
-
         /// <summary>
         /// The sender
         /// </summary>
@@ -73,7 +72,7 @@
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
         public void Send(string destinatary, string subject, string body, bool isHtml)
         {
-            this.Send(new []{ destinatary }, subject, body, isHtml);
+            this.Send(new[] { destinatary }, subject, body, isHtml);
         }
 
         /// <summary>
@@ -83,7 +82,12 @@
         /// <param name="subject">The subject.</param>
         /// <param name="body">The body.</param>
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
-        public void Send(IEnumerable<string> destinataries, string subject, string body, bool isHtml)
+        public void Send(
+            IEnumerable<string> destinataries,
+            string subject,
+            string body,
+            bool isHtml
+        )
         {
             this.Send(destinataries, subject, body, null, isHtml);
         }
@@ -96,7 +100,13 @@
         /// <param name="body">The body.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
-        public void Send(string destinatary, string subject, string body, dynamic parameters, bool isHtml)
+        public void Send(
+            string destinatary,
+            string subject,
+            string body,
+            dynamic parameters,
+            bool isHtml
+        )
         {
             this.Send(new[] { destinatary }, subject, body, parameters, isHtml);
         }
@@ -109,11 +119,18 @@
         /// <param name="body">The body.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
-        public void Send(IEnumerable<string> destinataries, string subject, string body, dynamic parameters, bool isHtml)
+        public void Send(
+            IEnumerable<string> destinataries,
+            string subject,
+            string body,
+            dynamic parameters,
+            bool isHtml
+        )
         {
             Email.DefaultRenderer = new RazorRenderer();
             Email.DefaultSender = new SmtpSender(this.client);
-            Email.From(this.sender)
+            Email
+                .From(this.sender)
                 .To(destinataries.Select(destinatary => new Address(destinatary)).ToList())
                 .Subject(subject)
                 .UsingTemplate(body, parameters, isHtml)

@@ -1,17 +1,18 @@
 ﻿namespace OG.Zoo.Domain.Interfaces.Generics
 {
-    using Entities.Generics;
-    using Infraestructure.Utils.Generics;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Entities.Generics;
+    using Infraestructure.Utils.Generics;
 
     /// <summary>
     /// Repository Base
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TId">The type of the identifier.</typeparam>
-    public interface IBaseRepository<TEntity, TId> where TEntity : Base
+    public interface IBaseRepository<TEntity, TId>
+        where TEntity : Base
     {
         /// <summary>
         /// Creates the specified entity.
@@ -51,7 +52,8 @@
         /// <param name="entity">The entity.</param>
         /// <param name="field">The field.</param>
         /// <returns></returns>
-        Task<TEntity> GetBy<T>(TEntity entity, Func<TEntity, T> field) where T : class;
+        Task<TEntity> GetBy<T>(TEntity entity, Func<TEntity, T> field)
+            where T : class;
 
         /// <summary>
         /// Gets all by.
@@ -60,7 +62,8 @@
         /// <param name="entity">The entity.</param>
         /// <param name="field">The field.</param>
         /// <returns></returns>
-        Task<IEnumerable<TEntity>> GetAllBy<T>(TEntity entity, Func<TEntity, T> field) where T : class;
+        Task<IEnumerable<TEntity>> GetAllBy<T>(TEntity entity, Func<TEntity, T> field)
+            where T : class;
 
         /// <summary>
         /// Gets all.
@@ -70,6 +73,11 @@
         /// <param name="sortBy">The sort by.</param>
         /// <param name="direction">The direction.</param>
         /// <returns></returns>
-        Task<Paginated<TEntity>> GetAll(int pageIndex, int pageSize, string sortBy, string direction);
+        Task<Paginated<TEntity>> GetAll(
+            int pageIndex,
+            int pageSize,
+            string sortBy,
+            string direction
+        );
     }
 }

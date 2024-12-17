@@ -1,7 +1,5 @@
 ﻿namespace OG.Zoo.Infraestructure.Utils.Generics
 {
-    using Google.Cloud.Firestore;
-
     /// <summary>
     /// Entity base
     /// </summary>

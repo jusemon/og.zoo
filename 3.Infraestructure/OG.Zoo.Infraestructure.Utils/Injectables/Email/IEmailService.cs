@@ -3,7 +3,7 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// 
+    /// Email Service Interface
     /// </summary>
     public interface IEmailService
     {
@@ -59,6 +59,12 @@
         /// <param name="body">The body.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="isHtml">if set to <c>true</c> [is HTML].</param>
-        void Send(IEnumerable<string> destinataries, string subject, string body, dynamic parameters, bool isHtml);
+        void Send(
+            IEnumerable<string> destinataries,
+            string subject,
+            string body,
+            dynamic parameters,
+            bool isHtml
+        );
     }
 }

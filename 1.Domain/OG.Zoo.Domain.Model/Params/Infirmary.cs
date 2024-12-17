@@ -1,9 +1,9 @@
 ﻿namespace OG.Zoo.Domain.Entities.Params
 {
-    using Google.Cloud.Firestore;
-    using Infraestructure.Utils.Generics;
-    using Infraestructure.Utils.Firebase;
     using System;
+    using Google.Cloud.Firestore;
+    using Infraestructure.Utils.Firebase;
+    using Infraestructure.Utils.Generics;
 
     /// <summary>
     /// Infirmary Chat
